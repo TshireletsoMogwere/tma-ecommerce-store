@@ -13,12 +13,19 @@ function Card() {
   return (
     <div className="card-container">
       {products.map(product => (
-        <div className="product-card" key={product.id}>
-          <img className="card-img" src={product.thumbnail} alt={product.title} />
-          <h3 className="item-name">{product.title}</h3>
-          <p className="card-details">{product.description}</p>
-          <p className="price">${product.price}</p>
-        </div>
+        <Link to={`/products/${product.id}`} key={product.id}>
+          <div className="product-card">
+            <img className="card-img" src={product.thumbnail} alt={product.title} />   
+            <h3 className="item-name">{product.title} <span className="brand">{product.brand}</span></h3>
+            <p className="category">{product.category}</p>
+              <div className="price-discount">
+              <p className="price">R{product.price} </p>
+              <p className='discount'>{product.discountPercentage}% OFF</p>
+              </div>
+              <p className="rating">⭐{product.rating}  ({product.stock} reviews)</p>
+            
+          </div>
+        </Link>
       ))}
     </div>
   );
