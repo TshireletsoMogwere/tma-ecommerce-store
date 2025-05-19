@@ -7,14 +7,14 @@ function App() {
   return (
     <>
     <div className='text-center font-bold text-lg mt-10'>
-      <h1>E-commerce Store</h1>
       <div className="App">
-        <Card />
+     
       </div>
     </div>
       <Router>
       <Routes>
-        <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/products" element={<Card />} /> 
+        <Route path="/products/:id" element={<ProductPage />} />
       </Routes>
     </Router>
     </>
