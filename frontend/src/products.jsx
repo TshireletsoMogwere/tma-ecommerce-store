@@ -16,7 +16,7 @@ function Card() {
         <Link to={`/products/${product.id}`} key={product.id}>
           <div className="product-card">
             <img className="card-img" src={product.thumbnail} alt={product.title} />   
-            <h3 className="item-name">{product.title} <span className="brand">({product.brand})</span></h3>
+            <h3 className="item-name">{product.title} <span className="brand">{product.brand}</span></h3>
             <p className="category">{product.category}</p>
               <div className="price-discount">
               <p className="price">R{product.price} </p>
