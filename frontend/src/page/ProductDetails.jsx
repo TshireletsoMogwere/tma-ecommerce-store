@@ -1,44 +1,71 @@
-    import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
-    function ProductPage() {
-      const [data, setData] = useState(null);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState(null);
+export default function ProductDetails() {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const navigate = useNavigate();
 
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch(`https://dummyjson.com/products/1`); 
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const json = await response.json();
-            setData(json);
-          } catch (err) {
-            setError(err);
-          } finally {
-            setLoading(false);
-          }
-        };
+  useEffect(() => {
+    fetch(`https://dummyjson.com/products/${id}`)
+      .then(res => res.json())
+      .then(data => setProduct(data));
+  }, [id]);
 
-        fetchData();
-      }, []);
+  if (!product) return <p className="text-center mt-10">Loading...</p>;
 
-      if (loading) {
-        return <p>Loading...</p>;
-      }
+  return (
+    <div className="p-6 font-sans">
+      {/* Back Button */}
+        <button
+      onClick={() => navigate('/products')}
+      className="flex items-center gap-2 mb-6 tex-white bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded hover:bg-gray-200 transition"
+    >
+      <ArrowLeft className="w-5 h-5" />
+      
+    </button>
 
-      if (error) {
-        return <p>Error: {error.message}</p>;
-      }
-
-      return (
-        <div>
-          {data && (
-            <pre>{JSON.stringify(data, null, 2)}</pre>
-          )}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Image Section */}
+        <div className="flex-1 flex justify-center items-start">
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+            className="w-[300px] h-auto object-contain rounded-lg shadow-md"
+          />
         </div>
-      );
-    }
 
-    export default ProductPage;
+        {/* Info Section */}
+        <div className="flex-1 space-y-4">
+          <h2 className="text-orange-500 text-2xl font-semibold">{product.title}</h2>
+
+          <p className="flex items-center space-x-2">
+            <span className="text-yellow-400 text-lg">⭐</span>
+            <span>{product.rating}</span>
+            <span className="text-gray-500">({product.stock} reviews)</span>
+          </p>
+
+          <p>
+            <span className="bg-gray-200 px-2 py-1 rounded mr-2 font-semibold">Price:</span>
+            <span className="text-lg font-medium">R{product.price}</span>
+          </p>
+
+          <div>
+            <p className="text-orange-500 font-semibold mt-4">Description:</p>
+            <p className="text-gray-700">{product.description}</p>
+          </div>
+
+          <p>
+            <span className="text-orange-500 font-semibold">Category:</span>{' '}
+            <span className="text-gray-700">{product.category}</span>
+          </p>
+
+          <button className="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
+            Add to cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
