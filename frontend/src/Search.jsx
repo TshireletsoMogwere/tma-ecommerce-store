@@ -1,40 +1,55 @@
 import React from "react";
 
-function Search() {
+function Search({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory }) {
   return (
-    <header style={styles.header}>
-      {/* Logo */}
-      <div style={styles.logo}>
-        🛒 <strong>E-commerce Store</strong>
-      </div>
+    <div>
+      {/* Header */}
+      <header style={styles.header}>
+        {/* Left: Logo and Store Name */}
+        <div style={styles.leftSection}>
+          <span style={styles.logo}>🛒</span>
+          <strong style={styles.storeName}>E-commerce Store</strong>
+        </div>
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search products..."
-        style={styles.searchBar}
-      />
+        {/* Center: Search Bar */}
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={styles.searchBar}
+        />
 
-      {/* Filter Dropdown */}
-      <select style={styles.filter}>
+        {/* Right: Navigation Buttons */}
+        <div style={styles.nav}>
+          <button style={styles.navButton}>Cart</button>
+          <button style={styles.navButton}>Customer Service</button>
+        </div>
+      </header>
+
+      {/* Category Filter */}
+      <div style={styles.categoryFilter}>
+        <label htmlFor="category" style={styles.filterLabel}>Category:</label>
+       <select
+        id="category"
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+        style={styles.filter}
+       >
         <option value="">All Categories</option>
-        <option value="electronics">Beauty</option>
-        <option value="fashion">Fragrance</option>
-        <option value="home">Funiture</option>
-        <option value="books">Groceries</option>
-      </select>
+        <option value="beauty">Beauty</option>
+        <option value="fragrances">Fragrances</option>
+        <option value="furniture">Furniture</option>
+        <option value="groceries">Groceries</option>
+       </select>
 
-      {/* Navigation Buttons */}
-      <div style={styles.nav}>
-        <button style={styles.navButton}>Cart</button>
       </div>
-    </header>
+    </div>
   );
 }
 
 const styles = {
   header: {
-    margin:"0px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -42,7 +57,15 @@ const styles = {
     backgroundColor: "#f8f8f8",
     borderBottom: "1px solid #ddd",
   },
+  leftSection: {
+    display: "flex",
+    alignItems: "center",
+  },
   logo: {
+    fontSize: "1.5rem",
+    marginRight: "10px",
+  },
+  storeName: {
     fontSize: "1.2rem",
   },
   searchBar: {
@@ -50,23 +73,37 @@ const styles = {
     width: "30%",
     borderRadius: "5px",
     border: "1px solid #ccc",
-  },
-  filter: {
-    padding: "8px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
+    textAlign: "center",
   },
   nav: {
     display: "flex",
     gap: "10px",
   },
   navButton: {
-    padding: "8px 12px",
+  padding: "8px 12px",
+  borderRadius: "5px",
+  border: "none",
+  backgroundColor: "orange",
+  color: "#fff",
+  cursor: "pointer",
+  transition: "background-color 0.3s",
+},
+
+  categoryFilter: {
+    display: "flex",
+    alignItems: "center",
+    padding: "10px 20px",
+    backgroundColor: "#f0f0f0",
+    borderBottom: "1px solid #ddd",
+  },
+  filterLabel: {
+    marginRight: "10px",
+    fontWeight: "bold",
+  },
+  filter: {
+    padding: "8px",
     borderRadius: "5px",
-    border: "none",
-    backgroundColor: "orange",
-    color: "#fff",
-    cursor: "pointer",
+    border: "1px solid #ccc",
   },
 };
 
