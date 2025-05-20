@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -64,6 +64,37 @@ export default function ProductDetails() {
           <button className="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
             Add to cart
           </button>
+        </div>
+      </div>
+      { /* Customer Review Section */}
+      <div className="customer-reviews-section">
+        <div className="customer-reviews-heading">
+          <h2 className="heading">Customer Reviews</h2>
+        </div>
+        <div className="customer-reviews-container">
+          { product.reviews.map((review) => (
+            <div className="review">
+              <div className="review-rating flex">
+                {[...Array(5)].map((_, i) => (
+                <Star
+                  key={ i }
+                  className={`
+                    w-5 h-5 ${ i < review.rating ? "text-orange-400" : "text-gray-300" }
+                  `}
+                />
+              ))}
+              </div>
+              <div className="reviewer-details">
+                <p className="reviewer-name-and-email">
+                  <span className="reviewer-name">{ review.reviewerName }</span>
+                  <span className="separator"> - </span>
+                  <span className="reviewer-date italic">{new Date(review.date).toDateString()}</span>
+                </p>
+                <p className="reviewer-email">{ review.reviewerEmail }</p>
+              </div>
+              <p className="review-comment">{ review.comment }</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

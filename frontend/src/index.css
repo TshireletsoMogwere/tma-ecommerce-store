@@ -84,3 +84,41 @@
     color: rgb(23, 114, 43);
     background-color: white;
 }
+
+.customer-reviews-section .customer-reviews-heading {
+    margin-bottom: 25px;
+}
+
+.customer-reviews-section .review {
+    margin-bottom: 40px;
+    border-bottom: 1px solid #e3e2e2;
+    padding-bottom: 5px;
+}
+
+.customer-reviews-section .review-rating {
+    margin-bottom: 5px;
+}
+
+.customer-reviews-section .reviewer-name {
+    font-weight: bold;
+}
+
+.customer-reviews-section .reviewer-email {
+    font-weight: lighter;
+}
+
+.customer-reviews-section .heading {
+    font-size: 25px;
+}
+
+.customer-reviews-section .reviewer-date {
+  font-weight: lighter;
+}
+
+.customer-reviews-section .reviewer-details {
+    margin-bottom: 10px;
+}
+
+.customer-reviews-section .review-comment {
+    margin-bottom: 5px;
+}
