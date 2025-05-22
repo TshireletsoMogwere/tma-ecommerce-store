@@ -7,7 +7,6 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const navigate = useNavigate();
-
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
       .then(res => res.json())
@@ -33,7 +32,7 @@ export default function ProductDetails() {
       </button>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Image Section */}
+            {/* Image Section */}
         <div className="flex-1">
           <div className="flex justify-center items-start mb-4">
             <img
@@ -42,7 +41,6 @@ export default function ProductDetails() {
               className="w-[300px] h-auto object-contain rounded-lg shadow-md"
             />
           </div>
-
           {/* Thumbnails */}
           <div className="flex gap-3 flex-wrap justify-center">
             {product.images?.map((img, index) => (
