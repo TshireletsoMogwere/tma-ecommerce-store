@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
-import ProductPage from './page/ProductDetails';
-import Card from './products.jsx';
-import Search from './Search.jsx';
+import ProductPage from './components/ProductDetails';
+import Card from './components/products.jsx';
+import Search from './components/Search.jsx';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
