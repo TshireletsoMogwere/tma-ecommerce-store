@@ -23,13 +23,12 @@ export default function ProductDetails() {
   return (
     <div className="p-6 font-sans">
       {/* Back Button */}
-      <button
-        onClick={() => navigate('/')}
-        className="flex items-center gap-2 mb-6 text-white bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Back
-      </button>
+        <button
+      onClick={() => navigate('/')}
+      className="flex items-center gap-2 mb-6 tex-white bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded hover:bg-gray-200 transition"
+    >
+      <ArrowLeft className="w-5 h-5" />
+    </button>
 
       <div className="flex flex-col md:flex-row gap-8">
             {/* Image Section */}
