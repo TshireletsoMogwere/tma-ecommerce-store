@@ -1,22 +1,53 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 function Search({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory }) {
+  const navigate = useNavigate();
+
+  // Handle search submission
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/products?search=${encodeURIComponent(searchTerm)}&category=${selectedCategory}`);
+    }
+  };
+
+  // Handle category change
+  const handleCategoryChange = (e) => {
+    const newCategory = e.target.value;
+    setSelectedCategory(newCategory);
+    navigate(`/products?category=${newCategory}${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''}`);
+  };
+
+  // Reset both search and category when logo is clicked
+  const handleLogoClick = () => {
+    setSearchTerm('');
+    setSelectedCategory('');
+    navigate('/');
+  };
+
   return (
     <div>
       {/* Header */}
       <header style={styles.header}>
         {/* Left: Logo and Store Name */}
-        <div style={styles.leftSection}>
-          <span style={styles.logo}>🛒</span>
-          <strong style={styles.storeName}>E-commerce Store</strong>
-        </div>
-
+        <Link 
+          to="/" 
+          style={{ textDecoration: 'none', color: 'inherit' }}
+          onClick={handleLogoClick}
+        >
+          <div style={styles.leftSection}>
+            <span style={styles.logo}>🛒</span>
+            <strong style={styles.storeName}>E-commerce Store</strong>
+          </div>
+        </Link>
         {/* Center: Search Bar */}
         <input
           type="text"
           placeholder="Search products..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleSearch}
           style={styles.searchBar}
         />
 
@@ -30,19 +61,18 @@ function Search({ searchTerm, setSearchTerm, selectedCategory, setSelectedCatego
       {/* Category Filter */}
       <div style={styles.categoryFilter}>
         <label htmlFor="category" style={styles.filterLabel}>Category:</label>
-       <select
-        id="category"
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        style={styles.filter}
-       >
-        <option value="">All Categories</option>
-        <option value="beauty">Beauty</option>
-        <option value="fragrances">Fragrances</option>
-        <option value="furniture">Furniture</option>
-        <option value="groceries">Groceries</option>
-       </select>
-
+        <select
+          id="category"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          style={styles.filter}
+        >
+          <option value="">All Categories</option>
+          <option value="beauty">Beauty</option>
+          <option value="fragrances">Fragrances</option>
+          <option value="furniture">Furniture</option>
+          <option value="groceries">Groceries</option>
+        </select>
       </div>
     </div>
   );
@@ -60,6 +90,7 @@ const styles = {
   leftSection: {
     display: "flex",
     alignItems: "center",
+    cursor: "pointer",
   },
   logo: {
     fontSize: "1.5rem",
@@ -80,15 +111,14 @@ const styles = {
     gap: "10px",
   },
   navButton: {
-  padding: "8px 12px",
-  borderRadius: "5px",
-  border: "none",
-  backgroundColor: "orange",
-  color: "#fff",
-  cursor: "pointer",
-  transition: "background-color 0.3s",
-},
-
+    padding: "8px 12px",
+    borderRadius: "5px",
+    border: "none",
+    backgroundColor: "orange",
+    color: "#fff",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
   categoryFilter: {
     display: "flex",
     alignItems: "center",
@@ -104,6 +134,7 @@ const styles = {
     padding: "8px",
     borderRadius: "5px",
     border: "1px solid #ccc",
+    cursor: "pointer",
   },
 };
 
