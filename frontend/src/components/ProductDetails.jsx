@@ -5,12 +5,17 @@ import { ArrowLeft, Star } from 'lucide-react';
 export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState('');
   const navigate = useNavigate();
-
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
       .then(res => res.json())
-      .then(data => setProduct(data));
+      .then(data => {
+        setProduct(data);
+        if (data.images && data.images.length > 0) {
+          setSelectedImage(data.images[0]); // Set the first image as default
+        }
+      });
   }, [id]);
 
   if (!product) return <p className="text-center mt-10">Loading...</p>;
@@ -27,13 +32,29 @@ export default function ProductDetails() {
     </button>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Image Section */}
-        <div className="flex-1 flex justify-center items-start">
-          <img
-            src={product.thumbnail}
-            alt={product.title}
-            className="w-[300px] h-auto object-contain rounded-lg shadow-md"
-          />
+            {/* Image Section */}
+        <div className="flex-1">
+          <div className="flex justify-center items-start mb-4">
+            <img
+              src={selectedImage}
+              alt={product.title}
+              className="w-[300px] h-auto object-contain rounded-lg shadow-md"
+            />
+          </div>
+          {/* Thumbnails */}
+          <div className="flex gap-3 flex-wrap justify-center">
+            {product.images?.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`Product ${index}`}
+                className={`w-16 h-16 object-cover border-2 rounded-md cursor-pointer ${
+                  selectedImage === img ? 'border-orange-500' : 'border-gray-300'
+                }`}
+                onClick={() => setSelectedImage(img)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Info Section */}
