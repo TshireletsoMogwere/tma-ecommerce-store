@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ProductPage from './components/ProductDetails';
 import Card from './components/products.jsx';
 import Search from './components/Search.jsx';
+import LimitedProductsList from './components/limitedProducts.jsx'
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,6 +40,10 @@ function App() {
               selectedCategory={selectedCategory}
             />
           }
+        />
+        {/* Products Listing Limit */}
+        <Route
+          path="/products/limit" element={ <LimitedProductsList /> }
         />
         <Route path="/products/:id" element={<ProductPage />} />
       </Routes>
