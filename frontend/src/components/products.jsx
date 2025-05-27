@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 
 function Card({ searchTerm, selectedCategory }) {
   const [products, setProducts] = useState([]);
-  const [limit, setLimit] = useState(6);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://dummyjson.com/products?limit=${limit}`);
+        const response = await fetch(`https://dummyjson.com/products`);
         const data = await response.json();
         setProducts(data.products);
       } catch (error) {
@@ -21,7 +20,24 @@ function Card({ searchTerm, selectedCategory }) {
     };
 
     fetchProducts();
-  }, [limit]);
+  }, []);
+
+  const handleProductListingLimit = (event) => {
+    let selectedLimit = event.target.value;
+    fetch(`https://dummyjson.com/products?limit=${selectedLimit}`)
+      .then((response) => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then((data) => {
+          setProducts(data.products);
+      })
+      .catch((error) => {
+          setError(error.message);
+      });
+  };
 
   // Apply search and category filters
   const filteredProducts = products.filter(product => {
@@ -40,6 +56,16 @@ function Card({ searchTerm, selectedCategory }) {
   return (
     <div>
 
+      <section className="product-listing-container">
+        <section className="product-listing-limit-container">
+            <label htmlFor="product-listing-limit-option">Products:</label>
+            <select id="product-listing-limit-option" onChange={handleProductListingLimit}>
+                <option value="30">30</option>
+                <option value="20">20</option>
+                <option value="10">10</option>
+                <option value="5">5</option>
+            </select>
+        </section>
         <div className="card-container">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -64,7 +90,7 @@ function Card({ searchTerm, selectedCategory }) {
             <p style={{ padding: '20px', color: 'orange' }}>Loading</p>
           )}
         </div>
-    
+      </section>
     </div>
   );
 }

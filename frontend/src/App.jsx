@@ -41,10 +41,6 @@ function App() {
             />
           }
         />
-        {/* Products Listing Limit */}
-        <Route
-          path="/products/limit" element={ <LimitedProductsList /> }
-        />
         <Route path="/products/:id" element={<ProductPage />} />
       </Routes>
     </Router>
