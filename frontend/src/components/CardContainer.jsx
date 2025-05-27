@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Card({ searchTerm, selectedCategory }) {
+function CardContainer({ searchTerm, selectedCategory }) {
   const [products, setProducts] = useState([]);
   const [limit, setLimit] = useState(6);
   const [loading, setLoading] = useState(false);
@@ -69,4 +69,4 @@ function Card({ searchTerm, selectedCategory }) {
   );
 }
 
-export default Card;
+export default CardContainer;
