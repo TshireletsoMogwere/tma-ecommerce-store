@@ -125,70 +125,69 @@ function CardContainer({ searchTerm }) {
 
       {/* Product Cards Grid */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-  {filteredProducts.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-      {filteredProducts.map((product) => (
-        <Link
-          to={`/products/${product.id}`}
-          key={product.id}
-          className="group block h-full"
-        >
-          <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
-            <div className="relative overflow-hidden bg-gray-50">
-              <img
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                src={product.thumbnail}
-                alt={product.title}
-                loading="lazy"
-              />
-              {product.discountPercentage > 0 && (
-                <div className="absolute top-2 right-2">
-                  <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
-                    {product.discountPercentage}% OFF
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="p-4 space-y-3 flex-1">
-              {product.brand && (
-                <span className="text-xs font-medium text-gray-500 uppercase">
-                  {product.brand}
-                </span>
-              )}
-              <h3 className="font-semibold text-orange-600 leading-tight group-hover:text-orange-600 transition-colors">
-                {product.title}
-              </h3>
-              <p className="text-sm text-gray-600 capitalize">
-                {product.category.replace("-", " ")}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-orange-600">
-                  R{product.price}
-                </span>
-                <div className="flex items-center justify-between border-t border-gray-100 pt-2">
-                  <div className="flex items-center">
-                    <span className="text-yellow-400">★</span>
-                    <span className="font-medium text-gray-900 ml-1">
-                      {product.rating}
-                    </span>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {filteredProducts.map((product) => (
+              <Link
+                to={`/products/${product.id}`}
+                key={product.id}
+                className="group block h-full"
+              >
+                <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
+                  <div className="relative overflow-hidden bg-gray-50">
+                    <img
+                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                      src={product.thumbnail}
+                      alt={product.title}
+                      loading="lazy"
+                    />
+                    {product.discountPercentage > 0 && (
+                      <div className="absolute top-2 right-2">
+                        <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
+                          {product.discountPercentage}% OFF
+                        </span>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </Link>
-      ))}
-    </div>
-  ) : searchTerm ? ( // This condition makes sure the message only shows when searching!
-    <p className="text-center text-gray-500 text-sm mt-8">
-      Try adjusting your search terms or filters to find what you're looking for.
-    </p>
-  ) : null}
-</div>
 
+                  <div className="p-4 space-y-3 flex-1">
+                    {product.brand && (
+                      <span className="text-xs font-medium text-gray-500 uppercase">
+                        {product.brand}
+                      </span>
+                    )}
+                    <h3 className="font-semibold text-orange-600 leading-tight group-hover:text-orange-600 transition-colors">
+                      {product.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 capitalize">
+                      {product.category.replace("-", " ")}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-orange-600">
+                        R{product.price}
+                      </span>
+                      <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+                        <div className="flex items-center">
+                          <span className="text-yellow-400">★</span>
+                          <span className="font-medium text-gray-900 ml-1">
+                            {product.rating}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        ) : searchTerm ? ( 
+          <p className="text-center text-gray-500 text-sm mt-8">
+            Try adjusting your search terms or filters to find what you're
+            looking for.
+          </p>
+        ) : null}
       </div>
- 
+    </div>
   );
 }
 

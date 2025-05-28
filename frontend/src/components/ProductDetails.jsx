@@ -14,7 +14,7 @@ export default function ProductDetails() {
       .then((data) => {
         setProduct(data);
         if (data.images && data.images.length > 0) {
-          setSelectedImage(data.images[0]); 
+          setSelectedImage(data.images[0]);
         }
       });
   }, [id]);

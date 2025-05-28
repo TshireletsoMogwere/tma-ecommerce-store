@@ -14,7 +14,7 @@ function Filter({ onCategorySelect }) {
   function handleChange(e) {
     const category = e.target.value;
     setSelected(category);
-    onCategorySelect(category); 
+    onCategorySelect(category);
   }
 
   return (
