@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import ProductPage from './components/ProductDetails';
-import Card from './components/products.jsx';
+import CardContainer from './components/CardContainer.jsx';
 import Search from './components/Search.jsx';
 import LimitedProductsList from './components/limitedProducts.jsx'
 
@@ -25,7 +25,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Card
+            <CardContainer
               searchTerm={searchTerm}
               selectedCategory={selectedCategory}
             />
@@ -35,7 +35,7 @@ function App() {
         <Route
           path="/products"
           element={
-            <Card
+            <CardContainer
               searchTerm={searchTerm}
               selectedCategory={selectedCategory}
             />
