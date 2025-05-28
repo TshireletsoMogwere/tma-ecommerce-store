@@ -24,6 +24,7 @@ function CardContainer({ searchTerm, selectedCategory }) {
 
   const handleProductListingLimit = (event) => {
     let selectedLimit = event.target.value;
+    setLoading(true);
     fetch(`https://dummyjson.com/products?limit=${selectedLimit}`)
       .then((response) => {
           if (!response.ok) {
@@ -36,7 +37,11 @@ function CardContainer({ searchTerm, selectedCategory }) {
       })
       .catch((error) => {
           setError(error.message);
-      });
+      })
+      .finally(() => {
+        setLoading(false);
+      }
+    )
   };
 
   // Apply search and category filters
@@ -55,17 +60,34 @@ function CardContainer({ searchTerm, selectedCategory }) {
 
   return (
     <div>
+      {loading && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="flex flex-col items-center gap-2">
+      <svg className="animate-spin h-10 w-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <p className="text-orange-500 font-semibold text-lg">Loading products...</p>
+    </div>
+  </div>
+)}
 
-      <section className="product-listing-container">
-        <section className="product-listing-limit-container">
-            <label htmlFor="product-listing-limit-option">Products:</label>
-            <select id="product-listing-limit-option" onChange={handleProductListingLimit}>
-                <option value="30">30</option>
-                <option value="20">20</option>
-                <option value="10">10</option>
-                <option value="5">5</option>
-            </select>
-        </section>
+  <section className="flex justify-center items-center p-4">
+  <section className="flex items-center gap-2 text-gray-800 text-base">
+    <label htmlFor="product-listing-limit-option" className="font-semibold">Products:</label>
+    <select
+      id="product-listing-limit-option"
+      onChange={handleProductListingLimit}
+      className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition text-gray-700"
+    >
+      <option className="hover:bg-orange-200">30</option>
+      <option className="hover:bg-orange-200">20</option>
+      <option className="hover:bg-orange-200">10</option>
+      <option className="hover:bg-orange-200">5</option>
+    </select>
+  </section>
+</section>
+
         <div className="card-container">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -90,8 +112,9 @@ function CardContainer({ searchTerm, selectedCategory }) {
             <p style={{ padding: '20px', color: 'orange' }}>Loading</p>
           )}
         </div>
-      </section>
+        
     </div>
+    
   );
 }
 
