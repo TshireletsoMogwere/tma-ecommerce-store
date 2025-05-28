@@ -3,7 +3,6 @@ import { useState } from 'react';
 import ProductPage from './components/ProductDetails';
 import CardContainer from './components/CardContainer.jsx';
 import Search from './components/Search.jsx';
-import LimitedProductsList from './components/limitedProducts.jsx'
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
