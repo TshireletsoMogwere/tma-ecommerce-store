@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Filter from "./Filter";
+import "../styles/index.css"; // Import the new CSS file
+
+
+
 
 function CardContainer({ searchTerm }) {
   const [products, setProducts] = useState([]);
@@ -49,6 +53,30 @@ function CardContainer({ searchTerm }) {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  // Generate mock rating distribution (since dummyjson doesn't provide this)
+  const generateRatingDistribution = (rating) => {
+    const baseRatings = {
+      5: Math.floor(rating * 20),
+      4: Math.floor(rating * 15),
+      3: Math.floor(rating * 10),
+      2: Math.floor(rating * 5),
+      1: Math.floor(rating * 2)
+    };
+    
+    // Normalize to make sure total makes sense
+    const total = Object.values(baseRatings).reduce((sum, val) => sum + val, 0);
+    const multiplier = (rating * 20) / total;
+    
+    return {
+      5: Math.round(baseRatings[5] * multiplier),
+      4: Math.round(baseRatings[4] * multiplier),
+      3: Math.round(baseRatings[3] * multiplier),
+      2: Math.round(baseRatings[2] * multiplier),
+      1: Math.round(baseRatings[1] * multiplier),
+      total: Math.round(rating * 20)
+    };
   };
 
   // Filter products by search & category
@@ -127,58 +155,89 @@ function CardContainer({ searchTerm }) {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredProducts.map((product) => (
-              <Link
-                to={`/products/${product.id}`}
-                key={product.id}
-                className="group block h-full"
-              >
-                <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
-                  <div className="relative overflow-hidden bg-gray-50">
-                    <img
-                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                      src={product.thumbnail}
-                      alt={product.title}
-                      loading="lazy"
-                    />
-                    {product.discountPercentage > 0 && (
-                      <div className="absolute top-2 right-2">
-                        <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
-                          {product.discountPercentage}% OFF
-                        </span>
-                      </div>
-                    )}
-                  </div>
+            {filteredProducts.map((product) => {
+              const ratingDistribution = generateRatingDistribution(product.rating);
+              const maxRatingCount = Math.max(...Object.values(ratingDistribution));
+              
+              return (
+                <Link
+                  to={`/products/${product.id}`}
+                  key={product.id}
+                  className="group block h-full"
+                >
+                  <article className="product-card-container bg-white rounded-lg shadow-sm border border-gray-200 overflow-visible hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
+                    <div className="relative overflow-hidden bg-gray-50">
+                      <img
+                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                        src={product.thumbnail}
+                        alt={product.title}
+                        loading="lazy"
+                      />
+                      {product.discountPercentage > 0 && (
+                        <div className="absolute top-2 right-2">
+                          <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
+                            {product.discountPercentage}% OFF
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="p-4 space-y-3 flex-1">
-                    {product.brand && (
-                      <span className="text-xs font-medium text-gray-500 uppercase">
-                        {product.brand}
-                      </span>
-                    )}
-                    <h3 className="font-semibold text-orange-600 leading-tight group-hover:text-orange-600 transition-colors">
-                      {product.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 capitalize">
-                      {product.category.replace("-", " ")}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-orange-600">
-                        R{product.price}
-                      </span>
-                      <div className="flex items-center justify-between border-t border-gray-100 pt-2">
-                        <div className="flex items-center">
+                    <div className="p-4 space-y-3 flex-1">
+                      {product.brand && (
+                        <span className="text-xs font-medium text-gray-500 uppercase">
+                          {product.brand}
+                        </span>
+                      )}
+                      <h3 className="font-semibold text-orange-600 leading-tight group-hover:text-orange-600 transition-colors">
+                        {product.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 capitalize">
+                        {product.category.replace("-", " ")}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-orange-600">
+                          R{product.price}
+                        </span>
+
+                        <div className="flex items-center justify-between border-t border-gray-100 pt-2 relative">
+                        <div className="flex items-center rating-trigger">
                           <span className="text-yellow-400">★</span>
                           <span className="font-medium text-gray-900 ml-1">
                             {product.rating}
                           </span>
                         </div>
+
+                          {/* Rating Popup */}
+                          <div className="rating-popup">
+                            <div className="rating-popup-content">
+                              <div className="rating-summary">
+                                <div className="rating-total">{product.rating}</div>
+                                <div className="rating-count">{ratingDistribution.total} reviews</div>
+                                <button className="view-all-btn">View all</button>
+                              </div>
+                              <div className="rating-stats">
+                                {[5, 4, 3, 2, 1].map((star) => (
+                                  <div key={star} className="rating-row">
+                                    <div className="rating-label">{star} star</div>
+                                    <div className="rating-bar-container">
+                                      <div 
+                                        className="rating-bar" 
+                                        style={{ width: `${(ratingDistribution[star] / maxRatingCount) * 100}%` }}
+                                      />
+                                    </div>
+                                    <div className="rating-value">{ratingDistribution[star]}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
+                  </article>
+                </Link>
+              );
+            })}
           </div>
         ) : searchTerm ? ( 
           <p className="text-center text-gray-500 text-sm mt-8">
