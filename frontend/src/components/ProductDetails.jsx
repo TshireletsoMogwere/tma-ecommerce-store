@@ -1,33 +1,37 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { ArrowLeft, Star } from 'lucide-react';
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Star } from "lucide-react";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProduct(data);
         if (data.images && data.images.length > 0) {
-          setSelectedImage(data.images[0]); // Set first image as default
+          setSelectedImage(data.images[0]); 
         }
       });
   }, [id]);
 
   if (!product) {
-    return <p className="text-center mt-10 text-lg text-gray-600">Loading product details...</p>;
+    return (
+      <p className="text-center mt-10 text-lg text-gray-600">
+        Loading product details...
+      </p>
+    );
   }
 
   return (
     <div className="max-w-10xl mx-auto p-6 font-sans">
       {/* Back Button */}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
         className="flex items-center gap-2 mb-6 text-white bg-orange-500 hover:bg-orange-600 transition px-4 py-2 rounded shadow"
       >
         <ArrowLeft className="w-5 h-5" />
@@ -51,7 +55,9 @@ export default function ProductDetails() {
                 src={img}
                 alt={`Product ${index}`}
                 className={`w-16 h-16 object-cover border-2 rounded-md cursor-pointer ${
-                  selectedImage === img ? 'border-orange-500' : 'border-gray-300'
+                  selectedImage === img
+                    ? "border-orange-500"
+                    : "border-gray-300"
                 } hover:scale-105 transition`}
                 onClick={() => setSelectedImage(img)}
               />
@@ -73,7 +79,7 @@ export default function ProductDetails() {
           </p>
 
           <p className="text-lg">
-            <span className="font-semibold text-gray-700">Price:</span>{' '}
+            <span className="font-semibold text-gray-700">Price:</span>{" "}
             <span className="text-orange-500 font-bold">R{product.price}</span>
           </p>
 
@@ -83,7 +89,7 @@ export default function ProductDetails() {
           </div>
 
           <p>
-            <span className="font-semibold text-gray-700">Category:</span>{' '}
+            <span className="font-semibold text-gray-700">Category:</span>{" "}
             <span className="text-orange-500">{product.category}</span>
           </p>
 
@@ -118,9 +124,13 @@ export default function ProductDetails() {
 
               <div className="text-sm text-gray-600 mb-1">
                 <p className="flex items-center gap-1">
-                  <span className="font-medium text-gray-800">{review.reviewerName}</span>
+                  <span className="font-medium text-gray-800">
+                    {review.reviewerName}
+                  </span>
                   <span className="text-gray-400">•</span>
-                  <span className="italic">{new Date(review.date).toDateString()}</span>
+                  <span className="italic">
+                    {new Date(review.date).toDateString()}
+                  </span>
                 </p>
                 <p className="text-xs text-gray-500">{review.reviewerEmail}</p>
               </div>

@@ -1,47 +1,37 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
-import ProductPage from './components/ProductDetails';
-import CardContainer from './components/CardContainer.jsx';
-import Search from './components/Search.jsx';
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Header from "./components/Header";
+import CardContainer from "./components/CardContainer";
+import ProductPage from "./components/ProductDetails";
+
+// Helper to conditionally render Header
+function Layout({ searchTerm, setSearchTerm }) {
+  const location = useLocation();
+
+  const showHeader = location.pathname === "/";
+
+  return (
+    <>
+      {showHeader && <Header setSearchTerm={setSearchTerm} />}
+      <Routes>
+        <Route path="/" element={<CardContainer searchTerm={searchTerm} />} />
+        <Route path="/products/:id" element={<ProductPage />} />
+      </Routes>
+    </>
+  );
+}
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <Router>
-      <div className='text-center font-bold text-lg mt-10'>
-        <div className="App">
-          <Search
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </div>
-      </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <CardContainer
-              searchTerm={searchTerm}
-              selectedCategory={selectedCategory}
-            />
-          }
-        />
-        {/* Add this route to handle search navigation */}
-        <Route
-          path="/products"
-          element={
-            <CardContainer
-              searchTerm={searchTerm}
-              selectedCategory={selectedCategory}
-            />
-          }
-        />
-        <Route path="/products/:id" element={<ProductPage />} />
-      </Routes>
+      <Layout searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
     </Router>
   );
 }

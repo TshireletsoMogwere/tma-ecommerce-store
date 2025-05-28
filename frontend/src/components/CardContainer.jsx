@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Filter from "./Filter";
 
-function CardContainer({ searchTerm, selectedCategory }) {
+function CardContainer({ searchTerm }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
+  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -13,7 +16,7 @@ function CardContainer({ searchTerm, selectedCategory }) {
         const data = await response.json();
         setProducts(data.products);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
@@ -22,30 +25,34 @@ function CardContainer({ searchTerm, selectedCategory }) {
     fetchProducts();
   }, []);
 
+  // Handle limit selection
   const handleProductListingLimit = (event) => {
-    let selectedLimit = event.target.value;
+    const selectedLimit = event.target.value;
     setLoading(true);
-    fetch(`https://dummyjson.com/products?limit=${selectedLimit}`)
+    fetch(
+      `https://dummyjson.com/products${
+        selectedLimit ? `?limit=${selectedLimit}` : ""
+      }`
+    )
       .then((response) => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
       })
       .then((data) => {
-          setProducts(data.products);
+        setProducts(data.products);
       })
       .catch((error) => {
-          setError(error.message);
+        console.error("Error fetching products:", error);
       })
       .finally(() => {
         setLoading(false);
-      }
-    )
+      });
   };
 
-  // Apply search and category filters
-  const filteredProducts = products.filter(product => {
+  // Filter products by search & category
+  const filteredProducts = products.filter((product) => {
     const matchesSearch = searchTerm
       ? product.title.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
@@ -55,66 +62,133 @@ function CardContainer({ searchTerm, selectedCategory }) {
     return matchesSearch && matchesCategory;
   });
 
-  // Generate dropdown options from 1 to 30
-  const dropdownOptions = Array.from({ length: 30 }, (_, i) => i + 1);
-
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50/50">
+      {/* Loading Overlay */}
       {loading && (
-  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-    <div className="flex flex-col items-center gap-2">
-      <svg className="animate-spin h-10 w-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-      </svg>
-      <p className="text-orange-500 font-semibold text-lg">Loading products...</p>
-    </div>
-  </div>
-)}
-
-  <section className="flex justify-center items-center p-4">
-  <section className="flex items-center gap-2 text-gray-800 text-base">
-    <label htmlFor="product-listing-limit-option" className="font-semibold">Products:</label>
-    <select
-      id="product-listing-limit-option"
-      onChange={handleProductListingLimit}
-      className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition text-gray-700"
-    >
-      <option className="hover:bg-orange-200">30</option>
-      <option className="hover:bg-orange-200">20</option>
-      <option className="hover:bg-orange-200">10</option>
-      <option className="hover:bg-orange-200">5</option>
-    </select>
-  </section>
-</section>
-
-        <div className="card-container">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <Link to={`/products/${product.id}`} key={product.id}>
-                <div className="product-card">
-                  <img className="card-img" src={product.thumbnail} alt={product.title} />
-                  <h3 className="item-name">
-                    {product.title} <span className="brand">{product.brand}</span>
-                  </h3>
-                  <p className="category">{product.category}</p>
-                  <div className="price-discount">
-                    <p className="price">R{product.price}</p>
-                    <p className="discount">{product.discountPercentage}% OFF</p>
-                  </div>
-                  <p className="rating">
-                    ⭐{product.rating} ({product.stock} reviews)
-                  </p>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <p style={{ padding: '20px', color: 'orange' }}>Loading</p>
-          )}
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center gap-3">
+            <svg
+              className="animate-spin h-10 w-10 text-orange-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            <p className="text-gray-700 font-medium">Loading products...</p>
+          </div>
         </div>
-        
+      )}
+
+      {/* Filter Controls Section */}
+      <section className="top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {/* Product Limit Dropdown */}
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="product-limit"
+                className="font-semibold text-gray-700 text-sm"
+              >
+                Products:
+              </label>
+              <select
+                id="product-limit"
+                onChange={handleProductListingLimit}
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+              >
+                <option value="">Default</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+
+            {/* Category Filter */}
+            <Filter onCategorySelect={setSelectedCategory} />
+          </div>
+        </div>
+      </section>
+
+      {/* Product Cards Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+  {filteredProducts.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      {filteredProducts.map((product) => (
+        <Link
+          to={`/products/${product.id}`}
+          key={product.id}
+          className="group block h-full"
+        >
+          <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
+            <div className="relative overflow-hidden bg-gray-50">
+              <img
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                src={product.thumbnail}
+                alt={product.title}
+                loading="lazy"
+              />
+              {product.discountPercentage > 0 && (
+                <div className="absolute top-2 right-2">
+                  <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
+                    {product.discountPercentage}% OFF
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 space-y-3 flex-1">
+              {product.brand && (
+                <span className="text-xs font-medium text-gray-500 uppercase">
+                  {product.brand}
+                </span>
+              )}
+              <h3 className="font-semibold text-orange-600 leading-tight group-hover:text-orange-600 transition-colors">
+                {product.title}
+              </h3>
+              <p className="text-sm text-gray-600 capitalize">
+                {product.category.replace("-", " ")}
+              </p>
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-bold text-orange-600">
+                  R{product.price}
+                </span>
+                <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+                  <div className="flex items-center">
+                    <span className="text-yellow-400">★</span>
+                    <span className="font-medium text-gray-900 ml-1">
+                      {product.rating}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </Link>
+      ))}
     </div>
-    
+  ) : searchTerm ? ( // This condition makes sure the message only shows when searching!
+    <p className="text-center text-gray-500 text-sm mt-8">
+      Try adjusting your search terms or filters to find what you're looking for.
+    </p>
+  ) : null}
+</div>
+
+      </div>
+ 
   );
 }
 
