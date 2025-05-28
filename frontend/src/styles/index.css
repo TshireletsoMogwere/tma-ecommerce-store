@@ -1,124 +1,114 @@
-.card-container {
-  background-color: #F8F8F8;
+.rating-popup {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
-  justify-content: center;
-}
-.product-card {
-  width: 250px;
-  background-color: #FFFFFF;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  text-align: center;
-  transition: transform 0.3s ease-in-out;
-}
-.product-card:hover {
-  transform: scale(1.03);
-  box-shadow: 5p 5px 5px rgba(0, 0, 0, 0.1);
-}
-.card-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
+  position: absolute;
+  bottom: calc(100% + 10px); /* Add some space between trigger and popup */
+  right: 0;
+  width: 300px;
+  background: white;
   border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+  display: none;
+  border: 1px solid #e5e7eb;
+  transform: translateY(0); /* Reset any transforms */
 }
-.caed-tittle{
-    display: flex;
-    flex-direction: row;
+
+/* Adjust the arrow position */
+.rating-popup::after {
+  content: '';
+  position: absolute;
+  top: calc(100% - 1px); /* Position at bottom of popup */
+  right: 20px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
 }
-.item-name {
-    text-align: left;
-  font-size: 1.2rem;
-  margin-top: 10px;
+
+/* Ensure the card container allows overflow */
+.product-card-container {
+  position: relative;
+  overflow: visible !important; /* Override any overflow hidden */
+}
+
+.rating-popup-content {
+  display: flex;
+  gap: 16px;
+}
+
+.rating-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 16px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.rating-total {
+  font-size: 28px;
   font-weight: bold;
-  color: rgb(249 115 22);
-}
-.brand{
-    font-weight: normal;
-    font-size: 20px;
-    color: rgb(156, 154, 150);
-}
-.card-details {
-  align-content: left;
-  font-size: 0.9rem;
-  color: #666;
-  margin: 10px 0;
-}
-.card-footer{
-    display: flex;
-}
-.rating{
-    text-align: left;
-    color: rgb(129, 128, 128);
-    width: 70%;
-    padding: 5px;
-    padding-left: 0px;
-    font-size: 15px;
-}
-.category{
-    color: rgb(129, 128, 128);
-    font-weight: bold;
-    text-align: left;
-    padding: 10px;
-    padding-left: 0px;
-}
-.price {
-  background-color: orange;
-  width: 50%;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 1rem;
-  color: #FFFFFF;
-  margin-right: 10px;
-}
-.price-discount{
-    display: flex;
-}
-.discount{
-    font-size: small;
-    width: 35%;
-    font-weight: bold;
-    color: rgb(23, 114, 43);
-    background-color: white;
+  color: #ea580c;
 }
 
-.customer-reviews-section .customer-reviews-heading {
-    margin-bottom: 25px;
+.rating-count {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
 }
 
-.customer-reviews-section .review {
-    margin-bottom: 40px;
-    border-bottom: 1px solid #e3e2e2;
-    padding-bottom: 5px;
+.view-all-btn {
+  background: #ea580c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.customer-reviews-section .review-rating {
-    margin-bottom: 5px;
+.view-all-btn:hover {
+  background: #c2410c;
 }
 
-.customer-reviews-section .reviewer-name {
-    font-weight: bold;
+.rating-stats {
+  flex: 1;
 }
 
-.customer-reviews-section .reviewer-email {
-    font-weight: lighter;
+.rating-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
-.customer-reviews-section .heading {
-    font-size: 25px;
+.rating-label {
+  font-size: 12px;
+  width: 60px;
+  color: #6b7280;
 }
 
-.customer-reviews-section .reviewer-date {
-  font-weight: lighter;
+.rating-bar-container {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.customer-reviews-section .reviewer-details {
-    margin-bottom: 10px;
+.rating-bar {
+  height: 100%;
+  background: #ea580c;
+  border-radius: 4px;
 }
 
-.customer-reviews-section .review-comment {
-    margin-bottom: 5px;
+.rating-value {
+  font-size: 12px;
+  width: 30px;
+  text-align: right;
+  color: #6b7280;
+}
+
+.rating-trigger:hover + .rating-popup,
+.rating-popup:hover {
+  display: block;
 }
