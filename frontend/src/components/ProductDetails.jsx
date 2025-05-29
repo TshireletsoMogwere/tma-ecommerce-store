@@ -27,6 +27,21 @@ export default function ProductDetails() {
     );
   }
 
+  // Calculate review statistics
+  const reviewStats = {
+    total: product.reviews?.length || 0,
+    average: product.reviews?.reduce((sum, review) => sum + review.rating, 0) / product.reviews?.length || 0,
+    distribution: [0, 0, 0, 0, 0] // 1-5 stars
+  };
+
+  if (product.reviews) {
+    product.reviews.forEach(review => {
+      if (review.rating >= 1 && review.rating <= 5) {
+        reviewStats.distribution[review.rating - 1]++;
+      }
+    });
+  }
+
   return (
     <div className="max-w-10xl mx-auto p-6 font-sans">
       {/* Back Button */}
@@ -103,6 +118,52 @@ export default function ProductDetails() {
       <div className="mt-12 p-6 rounded-lg shadow-s">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Customer Reviews</h2>
+          
+          {/* Review Summary Section */}
+          {reviewStats.total > 0 && (
+        <div className="review-summary">
+  <div className="review-content">
+    <div className="review-score">
+      <p className="average-score">{reviewStats.average.toFixed(1)}</p>
+      <p className="star-rating">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`star-icon ${
+              i < Math.round(reviewStats.average) ? "active" : ""
+            }`}
+          />
+        ))}
+      </p>
+      <p className="review-count">
+        {reviewStats.total} review{reviewStats.total !== 1 ? "s" : ""}
+      </p>
+    </div>
+
+    <div className="review-distribution">
+      {[5, 4, 3, 2, 1].map((stars) => (
+        <div key={stars} className="rating-bar2">
+          <span className="star-label">{stars} star</span>
+          <div className="progress-bar">
+            <div
+              className="progress-fill"
+              style={{
+                width: `${
+                  (reviewStats.distribution[stars - 1] / reviewStats.total) * 100
+                }%`,
+              }}
+            ></div>
+          </div>
+          <span className="rating-count">
+            {reviewStats.distribution[stars - 1]}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+          )}
         </div>
 
         <div className="space-y-6">
