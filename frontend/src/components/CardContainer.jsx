@@ -138,10 +138,10 @@ function CardContainer({ searchTerm }) {
                 onChange={handleProductListingLimit}
                 className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
               >
-                <option value="">Default</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
+                <option value="30">30</option>
                 <option value="20">20</option>
+                <option value="10">10</option>
+                <option value="5">5</option>
               </select>
             </div>
 
