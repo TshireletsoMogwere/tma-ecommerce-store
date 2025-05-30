@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Filter from "./Filter";
-import "../styles/index.css"; // Import the new CSS file
-
-
-
+import "../styles/index.css";
 
 function CardContainer({ searchTerm }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  // Fetch products
+  // Fetch products with reviews
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const response = await fetch(`https://dummyjson.com/products`);
         const data = await response.json();
-        setProducts(data.products);
+        
+        // Fetch reviews for each product
+        const productsWithReviews = await Promise.all(
+          data.products.map(async (product) => {
+            const reviewsResponse = await fetch('https://dummyjson.com/products/1');
+            const reviewsData = await reviewsResponse.json();
+            return {
+              ...product,
+              reviews: reviewsData.reviews || []
+            };
+          })
+        );
+        
+        setProducts(productsWithReviews);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -30,53 +40,56 @@ function CardContainer({ searchTerm }) {
   }, []);
 
   // Handle limit selection
-  const handleProductListingLimit = (event) => {
+  const handleProductListingLimit = async (event) => {
     const selectedLimit = event.target.value;
     setLoading(true);
-    fetch(
-      `https://dummyjson.com/products${
-        selectedLimit ? `?limit=${selectedLimit}` : ""
-      }`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProducts(data.products);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await fetch(
+        `https://dummyjson.com/products${
+          selectedLimit ? `?limit=${selectedLimit}` : ""
+        }`
+      );
+      const data = await response.json();
+      
+      // Fetch reviews for each product
+      const productsWithReviews = await Promise.all(
+        data.products.map(async (product) => {
+          const reviewsResponse = await fetch(`https://dummyjson.com/products/${product.id}/reviews`);
+          const reviewsData = await reviewsResponse.json();
+          return {
+            ...product,
+            reviews: reviewsData.reviews || []
+          };
+        })
+      );
+      
+      setProducts(productsWithReviews);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Generate mock rating distribution (since dummyjson doesn't provide this)
-  const generateRatingDistribution = (rating) => {
-    const baseRatings = {
-      5: Math.floor(rating * 20),
-      4: Math.floor(rating * 15),
-      3: Math.floor(rating * 10),
-      2: Math.floor(rating * 5),
-      1: Math.floor(rating * 2)
+  // Calculate rating distribution from real reviews
+  const getRatingDistribution = (reviews) => {
+    const distribution = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+      total: reviews.length
     };
     
-    // Normalize to make sure total makes sense
-    const total = Object.values(baseRatings).reduce((sum, val) => sum + val, 0);
-    const multiplier = (rating * 20) / total;
+    reviews.forEach(review => {
+      const rating = Math.round(review.rating);
+      if (rating >= 1 && rating <= 5) {
+        distribution[rating]++;
+      }
+    });
     
-    return {
-      5: Math.round(baseRatings[5] * multiplier),
-      4: Math.round(baseRatings[4] * multiplier),
-      3: Math.round(baseRatings[3] * multiplier),
-      2: Math.round(baseRatings[2] * multiplier),
-      1: Math.round(baseRatings[1] * multiplier),
-      total: Math.round(rating * 20)
-    };
+    return distribution;
   };
 
   // Filter products by search & category
@@ -156,8 +169,8 @@ function CardContainer({ searchTerm }) {
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => {
-              const ratingDistribution = generateRatingDistribution(product.rating);
-              const maxRatingCount = Math.max(...Object.values(ratingDistribution));
+              const ratingDistribution = getRatingDistribution(product.reviews);
+              const maxRatingCount = Math.max(...Object.values(ratingDistribution).slice(0, 5));
               
               return (
                 <Link
@@ -200,12 +213,12 @@ function CardContainer({ searchTerm }) {
                         </span>
 
                         <div className="flex items-center justify-between border-t border-gray-100 pt-2 relative">
-                        <div className="flex items-center rating-trigger">
-                          <span className="text-yellow-400">★</span>
-                          <span className="font-medium text-gray-900 ml-1">
-                            {product.rating}
-                          </span>
-                        </div>
+                          <div className="flex items-center rating-trigger">
+                            <span className="text-yellow-400">★</span>
+                            <span className="font-medium text-gray-900 ml-1">
+                              {product.rating}
+                            </span>
+                          </div>
 
                           {/* Rating Popup */}
                           <div className="rating-popup">
