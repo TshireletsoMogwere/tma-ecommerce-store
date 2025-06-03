@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
 import Filter from "./Filter";
 import "../styles/index.css";
 
@@ -7,7 +8,8 @@ function CardContainer({ searchTerm }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedLimit, setSelectedLimit] = useState(60); 
+  const [selectedLimit, setSelectedLimit] = useState(50);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch products
   useEffect(() => {
@@ -15,7 +17,7 @@ function CardContainer({ searchTerm }) {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://dummyjson.com/products?limit=${selectedLimit}`
+          `https://dummyjson.com/products?limit=100` 
         );
         const data = await response.json();
         setProducts(data.products);
@@ -27,11 +29,16 @@ function CardContainer({ searchTerm }) {
     };
 
     fetchProducts();
-  }, [selectedLimit]); // Re-fetch when limit changes
+  }, []);
+
+  // Reset page when limit or category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedLimit, selectedCategory, searchTerm]);
 
   // Handle limit selection
   const handleProductListingLimit = (event) => {
-    const newLimit = event.target.value;
+    const newLimit = Number(event.target.value);
     setSelectedLimit(newLimit);
   };
 
@@ -68,6 +75,14 @@ function CardContainer({ searchTerm }) {
       : true;
     return matchesSearch && matchesCategory;
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / selectedLimit);
+  const startIndex = (currentPage - 1) * selectedLimit;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + selectedLimit
+  );
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -110,7 +125,7 @@ function CardContainer({ searchTerm }) {
                 htmlFor="product-limit"
                 className="font-semibold text-gray-700 text-sm"
               >
-                Products:
+                Products per page:
               </label>
               <select
                 id="product-limit"
@@ -118,11 +133,11 @@ function CardContainer({ searchTerm }) {
                 value={selectedLimit}
                 className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
               >
-              <option value="default">Default</option>
-                <option value="30">30</option>
-                <option value="20">20</option>
-                <option value="10">10</option>
-                <option value="5">5</option>
+                <option value={60}>Default</option>
+                <option value={30}>30</option>
+                <option value={20}>20</option>
+                <option value={10}>10</option>
+                <option value={5}>5</option>
               </select>
             </div>
 
@@ -134,9 +149,9 @@ function CardContainer({ searchTerm }) {
 
       {/* Product Cards Grid */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {filteredProducts.length > 0 ? (
+        {paginatedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredProducts.map((product) => {
+            {paginatedProducts.map((product) => {
               const ratingDistribution = generateRatingDistribution(
                 product.rating
               );
@@ -209,9 +224,7 @@ function CardContainer({ searchTerm }) {
                               <div className="rating-stats">
                                 {[5, 4, 3, 2, 1].map((star) => (
                                   <div key={star} className="rating-row">
-                                    <div className="rating-label">
-                                      {star} star
-                                    </div>
+                                    <div className="rating-label">{star} star</div>
                                     <div className="rating-bar-container">
                                       <div
                                         className="rating-bar"
@@ -247,8 +260,49 @@ function CardContainer({ searchTerm }) {
           </p>
         ) : null}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8 gap-2 text-sm">
+          <button
+            className="flex items-center px-3 py-1 border rounded disabled:opacity-50"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            Previous
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 border rounded ${
+                currentPage === i + 1
+                  ? "bg-orange-500 text-white"
+                  : "bg-white hover:bg-orange-100"
+              }`}
+              aria-current={currentPage === i + 1 ? "page" : undefined}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="flex items-center px-3 py-1 border rounded disabled:opacity-50"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            aria-label="Next page"
+          >
+            Next
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 export default CardContainer;
+
