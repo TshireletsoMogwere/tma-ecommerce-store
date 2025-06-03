@@ -19,7 +19,7 @@ function CardContainer({ searchTerm }) {
         // Fetch reviews for each product
         const productsWithReviews = await Promise.all(
           data.products.map(async (product) => {
-            const reviewsResponse = await fetch('https://dummyjson.com/products/1');
+            const reviewsResponse = await fetch(`https://dummyjson.com/products/${product.id}`);
             const reviewsData = await reviewsResponse.json();
             return {
               ...product,
@@ -51,19 +51,8 @@ function CardContainer({ searchTerm }) {
       );
       const data = await response.json();
       
-      // Fetch reviews for each product
-      const productsWithReviews = await Promise.all(
-        data.products.map(async (product) => {
-          const reviewsResponse = await fetch(`https://dummyjson.com/products/${product.id}/reviews`);
-          const reviewsData = await reviewsResponse.json();
-          return {
-            ...product,
-            reviews: reviewsData.reviews || []
-          };
-        })
-      );
-      
-      setProducts(productsWithReviews);
+    
+    
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {

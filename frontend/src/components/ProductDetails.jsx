@@ -124,7 +124,7 @@ export default function ProductDetails() {
         <div className="review-summary">
   <div className="review-content">
     <div className="review-score">
-      <p className="average-score">{reviewStats.average.toFixed(1)}</p>
+      <p className="average-score">{product.rating}</p>
       <p className="star-rating">
         {[...Array(5)].map((_, i) => (
           <Star
