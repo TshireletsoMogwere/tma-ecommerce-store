@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Search from "./Search";
+import Search from './../controls/Search';
 
 function Header({ setSearchTerm }) {
   return (

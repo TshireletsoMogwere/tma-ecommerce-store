@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import Filter from "./Filter";
-import Pagination from "./Pagination";
+import Filter from "../controls/Filter";
+import Pagination from "../controls/Pagination";
 import "../styles/index.css";
+import GetProducts from "../api/products";
 
 function CardContainer({ searchTerm }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,32 +11,33 @@ function CardContainer({ searchTerm }) {
   const page = parseInt(searchParams.get("page")) || 1;
   const skip = (page - 1) * limit;
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [totalProducts, setTotalProducts] = useState(0);
+  const { products, loading, totalProducts } = GetProducts(20, 5);
+  // const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(false);
+  // const [totalProducts, setTotalProducts] = useState(0);
   const categoryParam = searchParams.get("category") || "";
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        let url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
-        if (categoryParam) {
-          url = `https://dummyjson.com/products/category/${categoryParam}?limit=${limit}&skip=${skip}`;
-        }
-        const res = await fetch(url);
-        const data = await res.json();
-        setProducts(data.products || []);
-        setTotalProducts(data.total || 0);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     setLoading(true);
+  //     try {
+  //       let url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
+  //       if (categoryParam) {
+  //         url = `https://dummyjson.com/products/category/${categoryParam}?limit=${limit}&skip=${skip}`;
+  //       }
+  //       const res = await fetch(url);
+  //       const data = await res.json();
+  //       setProducts(data.products || []);
+  //       setTotalProducts(data.total || 0);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProducts();
-  }, [limit, skip, categoryParam]);
+  //   fetchProducts();
+  // }, [limit, skip, categoryParam]);
 
   const handleProductListingLimit = (e) => {
     const newLimit = parseInt(e.target.value);

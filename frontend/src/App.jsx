@@ -6,8 +6,8 @@ import {
   useLocation,
 } from "react-router-dom";
 import Header from "./components/Header";
-import CardContainer from "./components/CardContainer";
-import ProductPage from "./components/ProductDetails";
+import CardContainer from "./views/CardContainer";
+import ProductDetails from "./views/ProductDetails";
 
 // Helper to conditionally render Header
 function Layout({ searchTerm, setSearchTerm }) {
@@ -20,7 +20,7 @@ function Layout({ searchTerm, setSearchTerm }) {
       {showHeader && <Header setSearchTerm={setSearchTerm} />}
       <Routes>
         <Route path="/" element={<CardContainer searchTerm={searchTerm} />} />
-        <Route path="/products/:id" element={<ProductPage />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
       </Routes>
     </>
   );
