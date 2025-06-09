@@ -1,7 +1,9 @@
+/* src/styles/rating-summary.css */
+
 .rating-popup {
   display: flex;
   position: absolute;
-  bottom: calc(100% + 10px); /* Add some space between trigger and popup */
+  bottom: calc(100% + 1px); /* Space between trigger and popup */
   right: 0;
   width: 300px;
   background: white;
@@ -10,25 +12,30 @@
   padding: 16px;
   z-index: 1000;
   display: none;
-  border: 1px solid #e5e7eb;
-  transform: translateY(0); /* Reset any transforms */
+  border: 1px solid #E5E7EB;
+  transform: translateY(0);
 }
 
-/* Adjust the arrow position */
 .rating-popup::after {
   content: '';
   position: absolute;
-  top: calc(100% - 1px); /* Position at bottom of popup */
+  top: calc(100% - 1px); /* Arrow at bottom of popup */
   right: 20px;
   border-width: 8px;
   border-style: solid;
   border-color: white transparent transparent transparent;
 }
 
-/* Ensure the card container allows overflow */
+/* Trigger hover and popup hover should both keep it visible */
+.rating-trigger:hover .rating-popup,
+.rating-popup:hover {
+  display: block;
+}
+
+/* Ensure card container can show popup */
 .product-card-container {
   position: relative;
-  overflow: visible !important; /* Override any overflow hidden */
+  overflow: visible !important;
 }
 
 .rating-popup-content {
@@ -41,23 +48,23 @@
   flex-direction: column;
   align-items: center;
   padding-right: 16px;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid #E5E7EB;
 }
 
 .rating-total {
   font-size: 28px;
   font-weight: bold;
-  color: #ea580c;
+  color: #EA580C;
 }
 
 .rating-count {
   font-size: 12px;
-  color: #6b7280;
+  color: #6B7280;
   margin-bottom: 8px;
 }
 
 .view-all-btn {
-  background: #ea580c;
+  background: #EA580C;
   color: white;
   border: none;
   border-radius: 4px;
@@ -68,7 +75,7 @@
 }
 
 .view-all-btn:hover {
-  background: #c2410c;
+  background: #C2410C;
 }
 
 .rating-stats {
@@ -79,25 +86,29 @@
   display: flex;
   align-items: center;
   margin-bottom: 4px;
+  gap: 8px; /* Add spacing between label and bar */
 }
 
+
 .rating-label {
+ 
   font-size: 12px;
   width: 60px;
-  color: #6b7280;
+  color: #6B7280;
+  text-align: right;
 }
 
 .rating-bar-container {
   flex: 1;
   height: 8px;
-  background: #e5e7eb;
+  background: #E5E7EB;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .rating-bar {
   height: 100%;
-  background: #ea580c;
+  background: #EA580C;
   border-radius: 4px;
 }
 
@@ -105,10 +116,5 @@
   font-size: 12px;
   width: 30px;
   text-align: right;
-  color: #6b7280;
-}
-
-.rating-trigger:hover + .rating-popup,
-.rating-popup:hover {
-  display: block;
+  color: #6B7280;
 }

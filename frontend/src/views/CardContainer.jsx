@@ -4,6 +4,7 @@ import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
 import "../styles/index.css";
 import GetProducts from "../api/products";
+import RatingSummary from "../views/RatingSummary";
 
 function CardContainer({ searchTerm }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,28 +51,6 @@ function CardContainer({ searchTerm }) {
     searchParams.set("category", category);
     searchParams.set("page", 1);
     setSearchParams(searchParams);
-  };
-
-  const generateRatingDistribution = (rating) => {
-    const baseRatings = {
-      5: Math.floor(rating * 20),
-      4: Math.floor(rating * 15),
-      3: Math.floor(rating * 10),
-      2: Math.floor(rating * 5),
-      1: Math.floor(rating * 2),
-    };
-
-    const total = Object.values(baseRatings).reduce((sum, val) => sum + val, 0);
-    const multiplier = (rating * 20) / total;
-
-    return {
-      5: Math.round(baseRatings[5] * multiplier),
-      4: Math.round(baseRatings[4] * multiplier),
-      3: Math.round(baseRatings[3] * multiplier),
-      2: Math.round(baseRatings[2] * multiplier),
-      1: Math.round(baseRatings[1] * multiplier),
-      total: Math.round(rating * 20),
-    };
   };
 
   const filteredProducts = products.filter((product) => {
@@ -144,9 +123,6 @@ function CardContainer({ searchTerm }) {
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => {
-              const ratingDistribution = generateRatingDistribution(product.rating);
-              const maxRatingCount = Math.max(...Object.values(ratingDistribution));
-
               return (
                 <Link
                   to={`/products/${product.id}`}
@@ -187,12 +163,13 @@ function CardContainer({ searchTerm }) {
                           R{product.price}
                         </span>
 
-                        <div className="flex items-center border-t border-gray-100 pt-2 relative">
-                          <span className="text-yellow-400">★</span>
-                          <span className="font-medium text-gray-900 ml-1">
-                            {product.rating}
-                          </span>
-                        </div>
+                       <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
+                        <span className="text-yellow-400">★</span>
+                        <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
+
+                        {/* Rating popup on hover */}
+                        <RatingSummary reviews={product.reviews || []} average={product.rating} />
+                      </div>
                       </div>
                     </div>
                   </article>
