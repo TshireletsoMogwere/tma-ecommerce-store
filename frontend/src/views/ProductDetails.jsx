@@ -1,3 +1,4 @@
+import ProductDetail from "../api/ProductDetails.js";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Star } from "lucide-react";
@@ -10,13 +11,15 @@ export default function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
-    fetch(`https://dummyjson.com/products/${id}`)
-      .then((res) => res.json())
+    ProductDetail.getProductDetail(id)
       .then((data) => {
         setProduct(data);
         if (data.images && data.images.length > 0) {
           setSelectedImage(data.images[0]);
         }
+      })
+      .catch((error) => {
+        console.error("Error fetching product details:", error);
       });
   }, [id]);
   if (!product) {
