@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
 import { getProducts } from "../api/products";
+import RatingSummary from "./RatingSummary";
 
 function CardContainer({ searchTerm }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -144,7 +145,8 @@ function CardContainer({ searchTerm }) {
                     )}
                   </div>
 
-                  <div className="p-4 space-y-3 flex-1">
+                  
+      <div className="p-4 space-y-3 flex-1">
                     {product.brand && (
                       <span className="text-xs font-medium text-gray-500 uppercase">
                         {product.brand}
@@ -155,9 +157,13 @@ function CardContainer({ searchTerm }) {
                       {product.category.replace("-", " ")}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-orange-600">
-                        R{product.price}
-                      </span>
+                      <span className="text-xl font-bold text-orange-600">R{product.price}</span>
+
+                      <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
+                        <span className="text-yellow-400">★</span>
+                        <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
+                        <RatingSummary reviews={product.reviews || []} average={product.rating} />
+                      </div>
                     </div>
                   </div>
                 </article>
