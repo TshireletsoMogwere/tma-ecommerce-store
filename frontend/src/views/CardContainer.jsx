@@ -2,66 +2,62 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
-import "../styles/index.css";
-import GetProducts from "../api/products";
-import RatingSummary from "../views/RatingSummary";
+import { getProducts } from "../api/products";
 
 function CardContainer({ searchTerm }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const limit = parseInt(searchParams.get("limit")) || 10;
   const page = parseInt(searchParams.get("page")) || 1;
   const skip = (page - 1) * limit;
-
-  const { products, loading, totalProducts } = GetProducts(20, 5);
-  // const [products, setProducts] = useState([]);
-  // const [loading, setLoading] = useState(false);
-  // const [totalProducts, setTotalProducts] = useState(0);
   const categoryParam = searchParams.get("category") || "";
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     setLoading(true);
-  //     try {
-  //       let url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
-  //       if (categoryParam) {
-  //         url = `https://dummyjson.com/products/category/${categoryParam}?limit=${limit}&skip=${skip}`;
-  //       }
-  //       const res = await fetch(url);
-  //       const data = await res.json();
-  //       setProducts(data.products || []);
-  //       setTotalProducts(data.total || 0);
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  // Fetch products when limit, skip, or category changes
+  useEffect(() => {
+    setLoading(true);
+    getProducts(limit, skip, categoryParam)
+      .then(({ products, total }) => {
+        setProducts(products);
+        setTotalProducts(total);
+      })
+      .catch(() => {
+        setProducts([]);
+        setTotalProducts(0);
+      })
+      .finally(() => setLoading(false));
+  }, [limit, skip, categoryParam]);
 
-  //   fetchProducts();
-  // }, [limit, skip, categoryParam]);
-
+  // Handler for product limit change
   const handleProductListingLimit = (e) => {
-    const newLimit = parseInt(e.target.value);
-    searchParams.set("limit", newLimit);
-    searchParams.set("page", 1); // Reset to page 1
-    setSearchParams(searchParams);
-  };
-
-  const handleCategorySelect = (category) => {
-    searchParams.set("category", category);
+    searchParams.set("limit", e.target.value);
     searchParams.set("page", 1);
     setSearchParams(searchParams);
   };
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = searchTerm
-      ? product.title.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
-    const matchesCategory = categoryParam
-      ? product.category.toLowerCase() === categoryParam.toLowerCase()
-      : true;
-    return matchesSearch && matchesCategory;
-  });
+  // Handler for category selection
+  const handleCategorySelect = (category) => {
+    if (category === "") {
+      searchParams.delete("category");
+    } else {
+      searchParams.set("category", category);
+    }
+    searchParams.set("page", 1);
+    setSearchParams(searchParams);
+  };
+
+  // Handler for page change
+  const handlePageChange = (newPage) => {
+    searchParams.set("page", newPage);
+    setSearchParams(searchParams);
+  };
+
+  // Optional search filter
+  const filteredProducts = products.filter((product) =>
+    searchTerm ? product.title.toLowerCase().includes(searchTerm.toLowerCase()) : true
+  );
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -106,7 +102,8 @@ function CardContainer({ searchTerm }) {
               <select
                 id="product-limit"
                 onChange={handleProductListingLimit}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                value={limit}
               >
                 <option value="30">30</option>
                 <option value="20">20</option>
@@ -114,6 +111,8 @@ function CardContainer({ searchTerm }) {
                 <option value="5">5</option>
               </select>
             </div>
+
+            {/* Now Filter handles its own fetching */}
             <Filter onCategorySelect={handleCategorySelect} />
           </div>
         </div>
@@ -122,60 +121,48 @@ function CardContainer({ searchTerm }) {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredProducts.map((product) => {
-              return (
-                <Link
-                  to={`/products/${product.id}`}
-                  key={product.id}
-                  className="group block h-full"
-                >
-                  <article className="product-card-container bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
-                    <div className="relative overflow-hidden bg-gray-50">
-                      <img
-                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                        src={product.thumbnail}
-                        alt={product.title}
-                        loading="lazy"
-                      />
-                      {product.discountPercentage > 0 && (
-                        <div className="absolute top-2 right-2">
-                          <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
-                            {product.discountPercentage}% OFF
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-4 space-y-3 flex-1">
-                      {product.brand && (
-                        <span className="text-xs font-medium text-gray-500 uppercase">
-                          {product.brand}
+            {filteredProducts.map((product) => (
+              <Link
+                to={`/products/${product.id}`}
+                key={product.id}
+                className="group block h-full"
+              >
+                <article className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
+                  <div className="relative overflow-hidden bg-gray-50">
+                    <img
+                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                      src={product.thumbnail}
+                      alt={product.title}
+                      loading="lazy"
+                    />
+                    {product.discountPercentage > 0 && (
+                      <div className="absolute top-2 right-2">
+                        <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
+                          {product.discountPercentage}% OFF
                         </span>
-                      )}
-                      <h3 className="font-semibold text-orange-600">
-                        {product.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 capitalize">
-                        {product.category.replace("-", " ")}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xl font-bold text-orange-600">
-                          R{product.price}
-                        </span>
-
-                       <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
-                        <span className="text-yellow-400">★</span>
-                        <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
-
-                        {/* Rating popup on hover */}
-                        <RatingSummary reviews={product.reviews || []} average={product.rating} />
                       </div>
-                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 space-y-3 flex-1">
+                    {product.brand && (
+                      <span className="text-xs font-medium text-gray-500 uppercase">
+                        {product.brand}
+                      </span>
+                    )}
+                    <h3 className="font-semibold text-orange-600">{product.title}</h3>
+                    <p className="text-sm text-gray-600 capitalize">
+                      {product.category.replace("-", " ")}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-orange-600">
+                        R{product.price}
+                      </span>
                     </div>
-                  </article>
-                </Link>
-              );
-            })}
+                  </div>
+                </article>
+              </Link>
+            ))}
           </div>
         ) : searchTerm ? (
           <p className="text-center text-gray-500 text-sm mt-8">
@@ -184,7 +171,12 @@ function CardContainer({ searchTerm }) {
         ) : null}
       </div>
 
-      <Pagination total={totalProducts} limit={limit} />
+      <Pagination
+        total={totalProducts}
+        limit={limit}
+        onPageChange={handlePageChange}
+        currentPage={page}
+      />
     </div>
   );
 }
