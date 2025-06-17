@@ -23,7 +23,7 @@ export default function RatingSummary({ reviews = [], average = 0, mode = "popup
         </div>
 
         <div className="rating-stats">
-          {ratingCounts.map(({ star, count, percentage }) => (
+          {ratingCounts.map(({ star, percentage }) => (
             <div className="rating-row" key={star}>
               <div className="rating-label">{star} stars</div>
               <div className="rating-bar-container">
