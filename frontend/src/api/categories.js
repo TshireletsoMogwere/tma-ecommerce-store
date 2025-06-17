@@ -1,16 +1,32 @@
-import React, { useEffect, useState } from "react";
+let cachedCategories = null;
+let cachedCategoryList = null;
 
-function Filter({ onCategorySelect }) {
-  const [categories, setCategories] = useState([]);
-  const [selected, setSelected] = useState("");
-
-  useEffect(() => {
-    fetch("https://dummyjson.com/products/categories")
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error("Failed to fetch categories", err));
-  }, []);
-
+export async function getCategories() {
+  if (cachedCategories) {
+    return cachedCategories;
+  }
+  try {
+    const res = await fetch("https://dummyjson.com/products/categories");
+    const data = await res.json();
+    cachedCategories = data;
+    return cachedCategories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
 }
 
-export default Filter
+export async function getCategoryList() {
+  if (cachedCategoryList) {
+    return cachedCategoryList;
+  }
+  try {
+    const res = await fetch("https://dummyjson.com/products/category-list");
+    const data = await res.json();
+    cachedCategoryList = data;
+    return cachedCategoryList;
+  } catch (error) {
+    console.error("Error fetching category list:", error);
+    return [];
+  }
+}
