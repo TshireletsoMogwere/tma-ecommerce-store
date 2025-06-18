@@ -1,0 +1,51 @@
+.sorting-container {
+  position: sticky;
+  top: 100px; /* Adjust as needed */
+  width: 16%;
+  background-color: #ffffff;
+  padding: 0px;
+  height: fit-content;
+  transition: width 0.3s ease;
+  z-index: 5;
+}
+
+.sorting-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.sorting-select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ffa113;
+  border-radius: 4px;
+}
+.sorting-container.collapsed {
+  width: 3%; /* Just enough to show the button */
+  padding: 10px;
+  align-items: center;
+}
+
+/* Toggle button at the top-right */
+.toggle-button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: #f7b14e;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 10;
+}
+
+/* Hide content when collapsed */
+.sorting-container.collapsed .sorting-title,
+.sorting-container.collapsed .sorting-select {
+  display: none;
+}
+
