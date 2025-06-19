@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kv5kh@$rw^j!!4f8j3zm_#@vhyl!e^gpqsree06=i#6m7hn1hs'
+SECRET_KEY = #
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -136,11 +136,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/img')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'thriftville.inbox@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'humxntxspknjadxu'  # Your Gmail password or app password
