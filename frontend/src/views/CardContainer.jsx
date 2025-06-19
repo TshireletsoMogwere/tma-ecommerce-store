@@ -4,7 +4,7 @@ import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
 import { getProducts } from "../api/products";
 import RatingSummary from "./RatingSummary";
-import Sorting from "../controls/sorting";
+import Sorting from "../controls/Sorting";
 
 function CardContainer({ searchTerm }) {
   const [sortConfig, setSortConfig] = useState({ sortBy: "", order: "" });
