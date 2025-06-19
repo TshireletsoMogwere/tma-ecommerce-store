@@ -124,12 +124,13 @@ useEffect(() => {
             </div>
 
             <Filter onCategorySelect={handleCategorySelect} />
+          <Sorting onSortChange={handleSortChange} currentSort={sortConfig} />
           </div>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-6">
-        <Sorting onSortChange={handleSortChange} currentSort={sortConfig} />
+      
         <div className="flex-1">
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
