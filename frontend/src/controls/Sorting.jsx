@@ -1,25 +1,19 @@
-import React, { useState } from "react";
 import "../styles/Sorting.css";
 
 function Sorting({ onSortChange, currentSort }) {
-  const [isVisible, setIsVisible] = useState(true);
 
   const handleChange = (e) => {
     const [sortBy, order] = e.target.value.split(",");
     onSortChange({ sortBy, order });
   };
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+ 
 
   return (
-    <aside className={`sorting-container ${isVisible ? "" : "collapsed"}`}>
-      <button className="toggle-button" onClick={toggleVisibility}>
-        {isVisible ? "✕" : "☰"}
-      </button>
-
-      {isVisible && (
+    <div className={`sorting-container`}>
+      {true && (
         <>
-          <h3 className="sorting-title">SORT</h3>
+          <h3 className="sorting-title">Sort: </h3>
           <select
             className="sorting-select"
             onChange={handleChange}
@@ -35,7 +29,7 @@ function Sorting({ onSortChange, currentSort }) {
           </select>
         </>
       )}
-    </aside>
+    </div>
   );
 }
 

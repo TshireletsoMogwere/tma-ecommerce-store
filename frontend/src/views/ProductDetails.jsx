@@ -80,7 +80,7 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
   <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
     <div className="relative max-w-3xl w-full px-4">
       <button
-        className="absolute top-4 right-4 text-white text-2xl"
+        className="absolute top-4 right-8 text-black text-2xl"
         onClick={() => setIsModalOpen(false)}
       >
         &times;
@@ -89,12 +89,12 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
       <img
         src={product.images[currentImageIndex]}
         alt="Full view"
-        className="w-full h-auto max-h-[80vh] object-contain mx-auto"
+        className="w-full h-auto max-h-[80vh] object-contain mx-auto bg-white rounded-lg"
       />
 
       {/* Arrows */}
       <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl"
+        className="absolute left-8 top-1/2 -translate-y-1/2 text-black text-3xl"
         onClick={() =>
           setCurrentImageIndex(
             (currentImageIndex - 1 + product.images.length) %
@@ -105,7 +105,7 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
         &#8592;
       </button>
       <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl"
+        className="absolute right-8 top-1/2 -translate-y-1/2 text-black text-3xl"
         onClick={() =>
           setCurrentImageIndex((currentImageIndex + 1) % product.images.length)
         }
