@@ -92,26 +92,30 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
         className="w-full h-auto max-h-[80vh] object-contain mx-auto bg-white rounded-lg"
       />
 
-      {/* Arrows */}
-      <button
-        className="absolute left-8 top-1/2 -translate-y-1/2 text-black text-3xl"
-        onClick={() =>
-          setCurrentImageIndex(
-            (currentImageIndex - 1 + product.images.length) %
-              product.images.length
-          )
-        }
-      >
-        &#8592;
-      </button>
-      <button
-        className="absolute right-8 top-1/2 -translate-y-1/2 text-black text-3xl"
-        onClick={() =>
-          setCurrentImageIndex((currentImageIndex + 1) % product.images.length)
-        }
-      >
-        &#8594;
-      </button>
+{product.images.length > 1 && (
+  <>
+    <button
+      className="absolute left-8 top-1/2 -translate-y-1/2 text-black text-3xl"
+      onClick={() =>
+        setCurrentImageIndex(
+          (currentImageIndex - 1 + product.images.length) % product.images.length
+        )
+      }
+    >
+      &#8592;
+    </button>
+
+    <button
+      className="absolute right-8 top-1/2 -translate-y-1/2 text-black text-3xl"
+      onClick={() =>
+        setCurrentImageIndex((currentImageIndex + 1) % product.images.length)
+      }
+    >
+      &#8594;
+    </button>
+  </>
+)}
+
     </div>
   </div>
 )}
@@ -154,6 +158,12 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
           <p>
             <span className="font-semibold text-gray-700">Category:</span>{" "}
             <span className="text-orange-500">{product.category}</span>
+          </p>
+          <p>
+            <span className="text-gray-500 bg-gray-100 p-1 rounded shadow-sm">
+              {product.tags.join(", ")}
+            </span>
+
           </p>
           <button className="mt-4 bg-orange-500 text-white px-5 py-2 rounded shadow hover:bg-orange-600 transition">
             Add to Cart
