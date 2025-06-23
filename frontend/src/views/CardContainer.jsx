@@ -66,6 +66,19 @@ useEffect(() => {
     setSearchParams(searchParams);
   };
 
+  const handleStockAvailability = (option) => {
+    if (option == "out of stock") {
+      filteredProducts = filteredProducts.filter((product) => {
+        return product.stock == 0;
+      });
+    }
+    else {
+      filteredProducts = filteredProducts.filter((product) => {
+        return product.stock > 0;
+      })
+    }
+  };
+
   const filteredProducts = products.filter((product) =>
     searchTerm ? product.title.toLowerCase().includes(searchTerm.toLowerCase()) : true
   );
