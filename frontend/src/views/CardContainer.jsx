@@ -91,13 +91,12 @@ useEffect(() => {
   let filteredProducts = products.filter((product) =>
     searchTerm ? product.title.toLowerCase().includes(searchTerm.toLowerCase()) : true
   );
-
-
 if (stockFilter === "out of stock") {
-  filteredProducts = filteredProducts.filter((product) => Number(product.stock) === 0);
+  filteredProducts = filteredProducts.filter((product) => product.stock === 0);
 } else if (stockFilter === "in stock") {
-  filteredProducts = filteredProducts.filter((product) => Number(product.stock) > 0);
+  filteredProducts = filteredProducts.filter((product) => product.stock > 0);
 }
+
 
   return (
     <div className="min-h-screen bg-gray-50/50">
