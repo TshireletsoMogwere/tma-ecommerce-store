@@ -6,12 +6,15 @@ import { getProducts } from "../api/products";
 import RatingSummary from "./RatingSummary";
 import Sorting from "../controls/Sorting";
 
-function CardContainer({ searchTerm }) {
+function CardContainer({ searchTerm,  }) {
   const [sortConfig, setSortConfig] = useState({ sortBy: "", order: "" });
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [loading, setLoading] = useState(false);
+  
+  // Stock filter
+  const [stockFilter, setStockFilter] = useState("All");
 
   const limit = parseInt(searchParams.get("limit")) || 10;
   const page = parseInt(searchParams.get("page")) || 1;
@@ -66,22 +69,35 @@ useEffect(() => {
     setSearchParams(searchParams);
   };
 
-  const handleStockAvailability = (option) => {
-    if (option == "out of stock") {
-      filteredProducts = filteredProducts.filter((product) => {
-        return product.stock == 0;
-      });
-    }
-    else {
-      filteredProducts = filteredProducts.filter((product) => {
-        return product.stock > 0;
-      })
-    }
-  };
+  const handleStockAvailability = (e) => {
+  const option = e.target.value;
+  setStockFilter(option);
+};
 
-  const filteredProducts = products.filter((product) =>
+
+  // const handleStockAvailability = (option) => {
+  //   if (option == "out of stock") {
+  //     filteredProducts = filteredProducts.filter((product) => {
+  //       return product.stock == 0;
+  //     });
+  //   }
+  //   else {
+  //     filteredProducts = filteredProducts.filter((product) => {
+  //       return product.stock > 0;
+  //     })
+  //   }
+  // };
+
+  let filteredProducts = products.filter((product) =>
     searchTerm ? product.title.toLowerCase().includes(searchTerm.toLowerCase()) : true
   );
+
+
+if (stockFilter === "out of stock") {
+  filteredProducts = filteredProducts.filter((product) => Number(product.stock) === 0);
+} else if (stockFilter === "in stock") {
+  filteredProducts = filteredProducts.filter((product) => Number(product.stock) > 0);
+}
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -135,6 +151,22 @@ useEffect(() => {
                 <option value="5">5</option>
               </select>
             </div>
+
+        <div className="flex items-center gap-3">
+  <label htmlFor="stock-select" className="text-sm font-semibold text-gray-700">
+    Stock:
+  </label>
+  <select
+    id="stock-select"
+    value={stockFilter}
+    onChange={handleStockAvailability}
+    className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+  >
+    <option value="All">All</option>
+    <option value="in stock">In Stock</option>
+    <option value="out of stock">Out of Stock</option>
+  </select>
+</div>
 
             <Filter onCategorySelect={handleCategorySelect} />
           <Sorting onSortChange={handleSortChange} currentSort={sortConfig} />
