@@ -2,7 +2,8 @@ import ProductDetail from "../api/ProductDetails.js";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Star } from "lucide-react";
-import RatingSummary from "../views/RatingSummary";
+import RatingSummary from "../popups/RatingSummary.jsx";
+import ImageModalViewer from "../popups/ImageViewerModal.jsx";
 
 
 export default function ProductDetails() {
@@ -44,81 +45,39 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
       <div className="flex flex-col md:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">
-<div className="relative w-[300px] h-auto mb-4 mx-auto">
-  <img
-    src={selectedImage}
-    alt={product.title}
-    className="w-full h-auto object-contain rounded-xl shadow-md border"
-  />
-
-  {/* Icon directly on top of image */}
-  <button
-    onClick={() => {
-      setCurrentImageIndex(product.images.indexOf(selectedImage));
-      setIsModalOpen(true);
-    }}
-    className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow hover:scale-110 transition z-10"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-700"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 10l4.553-2.276A2 2 0 0122 9.618v4.764a2 2 0 01-2.447 1.894L15 14m-6 0l-4.553 2.276A2 2 0 012 14.382V9.618a2 2 0 012.447-1.894L9 10m6 4V6m-6 8V6"
+    <div className="relative w-[300px] h-auto mb-4 mx-auto">
+      <img
+        src={selectedImage}
+        alt={product.title}
+        className="w-full h-auto object-contain rounded-xl shadow-md border"
       />
-    </svg>
-  </button>
-</div>
 
-{isModalOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
-    <div className="relative max-w-3xl w-full px-4">
+      {/* Icon directly on top of image */}
       <button
-        className="absolute top-4 right-8 text-black text-2xl"
-        onClick={() => setIsModalOpen(false)}
+        onClick={() => {
+          setCurrentImageIndex(product.images.indexOf(selectedImage));
+          setIsModalOpen(true);
+        }}
+        className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow hover:scale-110 transition z-10"
+        aria-label="View Full Image"
       >
-        &times;
+        <svg className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
       </button>
 
-      <img
-        src={product.images[currentImageIndex]}
-        alt="Full view"
-        className="w-full h-auto max-h-[80vh] object-contain mx-auto bg-white rounded-lg"
-      />
+      </div>
 
-{product.images.length > 1 && (
-  <>
-    <button
-      className="absolute left-8 top-1/2 -translate-y-1/2 text-black text-3xl"
-      onClick={() =>
-        setCurrentImageIndex(
-          (currentImageIndex - 1 + product.images.length) % product.images.length
-        )
-      }
-    >
-      &#8592;
-    </button>
+      {isModalOpen && (
+        <ImageModalViewer
+          images={product.images}
+          currentImageIndex={currentImageIndex}
+          setCurrentImageIndex={setCurrentImageIndex}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
-    <button
-      className="absolute right-8 top-1/2 -translate-y-1/2 text-black text-3xl"
-      onClick={() =>
-        setCurrentImageIndex((currentImageIndex + 1) % product.images.length)
-      }
-    >
-      &#8594;
-    </button>
-  </>
-)}
-
-    </div>
-  </div>
-)}
 
           <div className="flex gap-3 flex-wrap justify-center">
             {product.images?.map((img, index) => (
