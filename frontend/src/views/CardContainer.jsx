@@ -134,9 +134,12 @@ useEffect(() => {
         <div className="flex-1">
         {filteredProducts.length > 0 ? (
           <>
-          <div className="mb-4 text-sm text-gray-600 font-medium">
-            Showing <strong className="text-orange-500">{filteredProducts.length} {filteredProducts.length !== 1}</strong> results
-          </div>
+              <div className="mb-4 text-sm text-gray-600 font-medium">
+                Showing <strong className="text-orange-500">{products.length}</strong> of
+                <strong className="text-orange-500"> {totalProducts}</strong> results
+              </div>
+
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {filteredProducts.map((product) => (
