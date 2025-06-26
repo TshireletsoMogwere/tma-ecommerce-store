@@ -1,7 +1,7 @@
 .sorting-container {
   display: flex;
   position: sticky;
-  top: 100px; /* Adjust as needed */
+  top: 100px;
   width: 16%;
   background-color: #ffffff;
   padding: 0px;
@@ -20,18 +20,20 @@
 
 .sorting-select {
   min-width: 70px;
-  padding: 8px 12px;
+  
   font-size: 14px;
-  border: 1px solid gray;
-  border-radius: 4px;
+  border: 1px solid #D1D5DB;   
+  border-radius: 0.5rem;      
+  padding: 0.5rem 0.75rem;     
+  font-size: 0.875rem; 
 }
 .sorting-container.collapsed {
-  width: 3%; /* Just enough to show the button */
+  width: 3%;
   padding: 10px;
   align-items: center;
 }
 
-/* Toggle button at the top-right */
+
 .toggle-button {
   position: absolute;
   top: 0px;
