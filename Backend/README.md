@@ -1,4 +1,6 @@
+Navigate to the Backend folder!
 
+Run command: python manage.py runserver
 
 Django Project Setup Guide
 A concise guide to set up a Django project for local development.
