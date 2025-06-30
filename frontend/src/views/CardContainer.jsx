@@ -14,7 +14,7 @@ function CardContainer({ searchTerm }) {
   const [loading, setLoading] = useState(false);
   const [stockFilter, setStockFilter] = useState("All");
 
-  const limit = parseInt(searchParams.get("limit")) || 10;
+  const limit = parseInt(searchParams.get("limit")) || 0;
   const page = parseInt(searchParams.get("page")) || 1;
   const skip = (page - 1) * limit;
   const categoryParam = searchParams.get("category") || "";
@@ -29,9 +29,9 @@ function CardContainer({ searchTerm }) {
       order: sortConfig.order,
     })
       .then(({ products, total }) => {
-        if (products.length > 0) {
-          products[0].stock = 0;
-        }
+        // if (products.length > 0) {
+        //   products[0].stock = 0;
+        // }
 
         console.log("Raw products:", products); 
         setProducts(products);
@@ -69,9 +69,12 @@ function CardContainer({ searchTerm }) {
     setSearchParams(searchParams);
   };
 
+
+
   const handleStockAvailability = (e) => {
     const option = e.target.value;
-    setStockFilter(option);
+      setStockFilter(option);
+    
   };
 
 
@@ -84,6 +87,7 @@ function CardContainer({ searchTerm }) {
   } else if (stockFilter === "in stock") {
     filteredProducts = filteredProducts.filter((product) => (product.stock) > 0);
   }
+
 
   return (
     <div className="min-h-screen bg-gray-50/50">
