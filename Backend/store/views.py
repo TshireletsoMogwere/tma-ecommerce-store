@@ -8,11 +8,13 @@ from django.http import JsonResponse
 import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter
+from rest_framework.generics import ListAPIView
 from rest_framework import status
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import Customer
-from .serializers import CustomerRegistrationSerializer, UserLoginSerializer
+from .serializers import CustomerRegistrationSerializer, UserLoginSerializer, ProductSerializer
 from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -23,6 +25,9 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.http import JsonResponse
+from .models import Product
+from django.views.decorators.csrf import csrf_exempt
 from .forms import EditAccountForm
 
 
@@ -117,9 +122,6 @@ def cart(request):
      context = {'items':items, 'order':order, 'cartItems': cartItems}
      return render(request, 'store/cart.html', context)
 
-from django.http import JsonResponse
-from .models import Product
-from .utils import cartData
 
 def shop(request):
     products = Product.objects.prefetch_related('reviews').all()
@@ -183,10 +185,6 @@ def shop(request):
 
     return JsonResponse(response_data, safe=False)
 
-from django.http import JsonResponse
-from .models import Product
-from django.views.decorators.csrf import csrf_exempt
-
 @csrf_exempt
 def products(request):
     products = Product.objects.prefetch_related('reviews').all()
@@ -239,8 +237,6 @@ def products(request):
         data.append(product_data)
 
     return JsonResponse({"products": data}, safe=False)
-
-
 
 def updateItem(request):
      data = json.loads(request.body)
@@ -422,3 +418,66 @@ def help_center(request):
        
 
     return render(request, 'store/help_center.html',context)
+
+class ProductSearchView(ListAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ['title', 'description', 'category', 'tags', 'brand']
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  # <--- 🔍 Filter logic (search)
+        serializer = self.get_serializer(queryset, many=True) # <--- 🔄 Convert queryset to JSON
+        return Response({'products': serializer.data})        # <--- 📤 Custom response format
+
+
+class ProductCategoriesView(APIView):
+    def get(self, request):
+        categories = Product.objects.values_list('category', flat=True).distinct()
+        base_url = request.build_absolute_uri('/api/products/category/')
+        data = [
+            {
+                "slug": cat.lower().replace(' ', '-'),
+                "name": cat,
+                "url": f"{base_url}{cat.lower().replace(' ', '-')}/"
+            }
+            for cat in categories
+        ]
+        return Response(data)
+    
+class CategoryListView(APIView):
+    def get(self, request):
+        categories = Product.objects.values_list('category', flat=True).distinct()
+        return Response(list(categories))
+    
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class ProductsByCategoryView(ListAPIView):
+    serializer_class = ProductSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        slug = self.kwargs.get('slug').replace('-', ' ')
+        return Product.objects.filter(category__iexact=slug)
+    
+class ProductDeleteView(APIView):
+    def delete(self, request, id):
+        product = Product.objects.filter(id=id).first()
+        if not product:
+            return Response({'error': 'Product not found'}, status=404)
+        data = ProductSerializer(product).data
+        data['isDeleted'] = True
+        data['deletedOn'] = datetime.utcnow().isoformat() + "Z"
+        return Response(data)
+
+class ProductAddView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['id'] = Product.objects.order_by('-id').first().id + 1 if Product.objects.exists() else 1
+        return Response(data)
+

@@ -1,6 +1,6 @@
 from django.urls import path
 from django.urls import path
-from .views import CustomerRegistrationView
+from .views import CustomerRegistrationView, ProductSearchView
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -21,7 +21,14 @@ urlpatterns = [
     path('update_item/', views.updateItem, name="update_item"),
     path('process_order/', views.processOrder, name="processOrder"),
     path('profile/', views.profile, name='profile'),
+
+    path('products/search/', ProductSearchView.as_view(), name='product-search'),
+    path('products/add/', views.ProductAddView.as_view(), name='product-add'),
     path('logout/', views.logout_view, name='logout'),
+    path('products/category/<slug:slug>/', views.ProductsByCategoryView.as_view(), name='products-by-category'),
+    path('products/categories/', views.ProductCategoriesView.as_view(), name='product-categories'),
+    path('products/<int:id>/', views.ProductDeleteView.as_view(), name='product-delete'),
+    path('products/category-list/', views.CategoryListView.as_view(), name='category-list'),
     path('account/', views.account_page_view, name='account_page'),
     path('account/edit/', views.edit_account_view, name='edit_account'),
     path('track_order/', views.track_order_view, name='track_order'),
