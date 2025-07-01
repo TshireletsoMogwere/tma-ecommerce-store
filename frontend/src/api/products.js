@@ -2,9 +2,9 @@
 let cachedProducts = null;
 let cachedTotal = 0;
 
-export async function getProducts({ limit = 0, skip = 0, category = "", sortBy = "", order = "" }) {
-  // Cache only for default query (no category, skip = 0, limit = 10, no sort)
-  const isDefaultQuery = !category && skip === 0 && limit === 0 && !sortBy && !order;
+export async function getProducts({ limit = 30, skip = 0, category = "", sortBy = "", order = "" }) {
+  // Cache only for default query (no category, skip = 0, limit = 30, no sort)
+  const isDefaultQuery = !category && skip === 0 && limit === 30 && !sortBy && !order;
   if (cachedProducts && isDefaultQuery) {
     return { products: cachedProducts, total: cachedTotal };
   }

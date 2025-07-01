@@ -6,6 +6,7 @@ import { getProducts } from "../api/products";
 import RatingSummary from "../popups/RatingSummary";
 import Sorting from "../controls/Sorting";
 import { filterProductsByStock } from "../helpers/productsHelper";
+import { RotateCcw } from "lucide-react";
 
 function CardContainer({ searchTerm }) {
   const [sortConfig, setSortConfig] = useState({ sortBy: "", order: "" });
@@ -15,7 +16,7 @@ function CardContainer({ searchTerm }) {
   const [loading, setLoading] = useState(false);
   const [stockFilter, setStockFilter] = useState("All");
 
-  const limit = parseInt(searchParams.get("limit")) || 0;
+  const limit = parseInt(searchParams.get("limit")) || 30;
   const page = parseInt(searchParams.get("page")) || 1;
   const skip = (page - 1) * limit;
   const categoryParam = searchParams.get("category") || "";
@@ -38,7 +39,7 @@ function CardContainer({ searchTerm }) {
         setTotalProducts(0);
       })
       .finally(() => setLoading(false));
-  }, [limit, skip, categoryParam, sortConfig]);
+  }, [categoryParam, sortConfig]);
 
   const handleProductListingLimit = (e) => {
     searchParams.set("limit", e.target.value);
@@ -72,23 +73,49 @@ function CardContainer({ searchTerm }) {
 
   // Apply search term filtering
   let searchFilteredProducts = products.filter((product) =>
-    searchTerm ? product.title.toLowerCase().includes(searchTerm.toLowerCase()) : true
+    searchTerm
+      ? product.title.toLowerCase().includes(searchTerm.toLowerCase())
+      : true
   );
 
   // Apply stock filter using helper
-  const {
-    products: filteredProducts,
-    count: filteredCount
-  } = filterProductsByStock(searchFilteredProducts, stockFilter);
+  const { products: filteredProducts, count: filteredCount } =
+    filterProductsByStock(searchFilteredProducts, stockFilter);
+
+  const handleResetFilters = () => {
+    setLoading(true);
+    setStockFilter("All");
+    setSortConfig({ sortBy: "", order: "" });
+    searchParams.delete("category");
+    searchParams.delete("limit");
+    searchParams.delete("page");
+    setSearchParams(searchParams);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50">
       {loading && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center gap-3">
-            <svg className="animate-spin h-10 w-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <svg
+              className="animate-spin h-10 w-10 text-orange-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
             </svg>
             <p className="text-gray-700 font-medium">Loading products...</p>
           </div>
@@ -98,11 +125,28 @@ function CardContainer({ searchTerm }) {
       <section className="top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-wrap items-center justify-center gap-6">
+            <button
+              onClick={handleResetFilters}
+              className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset All Filters
+            </button>
+
             {/* Limit Selector */}
             <div className="flex items-center gap-3">
-              <label htmlFor="product-limit" className="font-semibold text-gray-700 text-sm">Products:</label>
-              <select id="product-limit" onChange={handleProductListingLimit} className="border border-gray-300 rounded-lg px-3 py-2 text-sm" value={limit}>
-                <option value="all">All</option>
+              <label
+                htmlFor="product-limit"
+                className="font-semibold text-gray-700 text-sm"
+              >
+                Products:
+              </label>
+              <select
+                id="product-limit"
+                onChange={handleProductListingLimit}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                value={limit}
+              >
                 <option value="30">30</option>
                 <option value="20">20</option>
                 <option value="10">10</option>
@@ -112,14 +156,18 @@ function CardContainer({ searchTerm }) {
 
             {/* Stock Filter */}
             <div className="flex items-center gap-3">
-              <label htmlFor="stock-select" className="text-sm font-semibold text-gray-700">Stock:</label>
+              <label
+                htmlFor="stock-select"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Stock:
+              </label>
               <select
                 id="stock-select"
                 value={stockFilter}
                 onChange={handleStockAvailability}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
               >
-                <option value="All">All</option>
                 <option value="in stock">In Stock</option>
                 <option value="out of stock">Out of Stock</option>
               </select>
@@ -138,13 +186,26 @@ function CardContainer({ searchTerm }) {
               <div className="mb-4 text-sm text-gray-600 font-medium">
                 {stockFilter === "All" ? (
                   <>
-                    Showing <strong className="text-orange-500">{filteredProducts.length}</strong> of
-                    <strong className="text-orange-500"> {totalProducts}</strong> results
+                    Showing{" "}
+                    <strong className="text-orange-500">
+                      {filteredProducts.length}
+                    </strong>{" "}
+                    of
+                    <strong className="text-orange-500">
+                      {" "}
+                      {totalProducts}
+                    </strong>{" "}
+                    results
                   </>
                 ) : (
                   <>
-                    Showing <strong className="text-orange-500">{filteredCount}</strong> {stockFilter} products out of
-                    <strong className="text-orange-500"> {totalProducts}</strong>
+                    Showing{" "}
+                    <strong className="text-orange-500">{filteredCount}</strong>{" "}
+                    {stockFilter} products out of
+                    <strong className="text-orange-500">
+                      {" "}
+                      {totalProducts}
+                    </strong>
                   </>
                 )}
               </div>
@@ -179,7 +240,9 @@ function CardContainer({ searchTerm }) {
                             {product.brand}
                           </span>
                         )}
-                        <h3 className="font-semibold text-orange-600">{product.title}</h3>
+                        <h3 className="font-semibold text-orange-600">
+                          {product.title}
+                        </h3>
                         <p className="text-sm text-gray-600 capitalize">
                           {product.category.replace("-", " ")}
                         </p>
@@ -189,8 +252,13 @@ function CardContainer({ searchTerm }) {
                           </span>
                           <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
                             <span className="text-yellow-400">★</span>
-                            <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
-                            <RatingSummary reviews={product.reviews || []} average={product.rating} />
+                            <span className="font-medium text-gray-900 ml-1">
+                              {product.rating}
+                            </span>
+                            <RatingSummary
+                              reviews={product.reviews || []}
+                              average={product.rating}
+                            />
                           </div>
                         </div>
                       </div>
