@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
 import { getProducts } from "../api/products";
-import RatingSummary from "./RatingSummary";
+import RatingSummary from "../popups/RatingSummary";
 import Sorting from "../controls/Sorting";
 
 function CardContainer({ searchTerm }) {
@@ -140,42 +140,64 @@ function CardContainer({ searchTerm }) {
 
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-6">
         <div className="flex-1">
-          {filteredProducts.length > 0 ? (
-            <>
+        {filteredProducts.length > 0 ? (
+          <>
               <div className="mb-4 text-sm text-gray-600 font-medium">
-                Showing <strong className="text-orange-500">{filteredProducts.length}</strong> results
+                Showing <strong className="text-orange-500">{products.length}</strong> of
+                <strong className="text-orange-500"> {totalProducts}</strong> results
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {filteredProducts.map((product) => (
-                  <Link to={`/products/${product.id}`} key={product.id} className="group block h-full">
-                    <article className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
-                      <div className="relative overflow-hidden bg-gray-50">
-                        <img className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300" src={product.thumbnail} alt={product.title} loading="lazy" />
-                        {product.discountPercentage > 0 && (
-                          <div className="absolute top-2 right-2">
-                            <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
-                              {product.discountPercentage}% OFF
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4 space-y-3 flex-1">
-                        {product.brand && <span className="text-xs font-medium text-gray-500 uppercase">{product.brand}</span>}
-                        <h3 className="font-semibold text-orange-600">{product.title}</h3>
-                        <p className="text-sm text-gray-600 capitalize">{product.category.replace("-", " ")}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-bold text-orange-600">R{product.price}</span>
-                          <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
-                            <span className="text-yellow-400">★</span>
-                            <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
-                            <RatingSummary reviews={product.reviews || []} average={product.rating} />
-                          </div>
+
+
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredProducts.map((product) => (
+                <Link
+                  to={`/products/${product.id}`}
+                  key={product.id}
+                  className="group block h-full "
+                >
+                  <article className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer h-full">
+                    <div className="relative overflow-hidden bg-gray-50">
+                      <img
+                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                        src={product.thumbnail}
+                        alt={product.title}
+                        loading="lazy"
+                      />
+                      {product.discountPercentage > 0 && (
+                        <div className="absolute top-2 right-2">
+                          <span className="bg-green-200 text-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
+                            {product.discountPercentage}% OFF
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-4 space-y-3 flex-1">
+                      {product.brand && (
+                        <span className="text-xs font-medium text-gray-500 uppercase">
+                          {product.brand}
+                        </span>
+                      )}
+                      <h3 className="font-semibold text-orange-600">{product.title}</h3>
+                      <p className="text-sm text-gray-600 capitalize">
+                        {product.category.replace("-", " ")}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-orange-600">
+                          R{product.price}
+                        </span>
+                        <div className="flex items-center border-t border-gray-100 pt-2 relative rating-trigger">
+                          <span className="text-yellow-400">★</span>
+                          <span className="font-medium text-gray-900 ml-1">{product.rating}</span>
+                          <RatingSummary reviews={product.reviews || []} average={product.rating} />
                         </div>
                       </div>
-                    </article>
-                  </Link>
-                ))}
-              </div>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
             </>
           ) : (
             <p className="text-center text-gray-500 text-sm mt-8">
