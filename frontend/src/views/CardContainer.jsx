@@ -39,7 +39,7 @@ function CardContainer({ searchTerm }) {
         setTotalProducts(0);
       })
       .finally(() => setLoading(false));
-  }, [categoryParam, sortConfig]);
+  }, [limit, skip, categoryParam, sortConfig]);
 
   const handleProductListingLimit = (e) => {
     searchParams.set("limit", e.target.value);
