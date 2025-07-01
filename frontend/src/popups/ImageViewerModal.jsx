@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ImageModalViewer({
+export default function isImageModalOpen({
   images,
   currentImageIndex,
   setCurrentImageIndex,

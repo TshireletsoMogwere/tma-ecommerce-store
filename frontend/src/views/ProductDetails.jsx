@@ -2,7 +2,7 @@ import ProductDetail from "../api/ProductDetails.js";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Star } from "lucide-react";
-import RatingSummary from "../popups/RatingSummary.jsx";
+import RatingSummary from "../popups/RatingSummaryModal.jsx";
 import ImageModalViewer from "../popups/ImageViewerModal.jsx";
 
 

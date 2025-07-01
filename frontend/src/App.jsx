@@ -8,22 +8,24 @@ import {
 import Header from "./components/Header";
 import CardContainer from "./views/CardContainer";
 import ProductDetails from "./views/ProductDetails";
+import CartDisplay from "./views/CartDisplay";
 
 // Helper to conditionally render Header
 function Layout({ searchTerm, setSearchTerm }) {
   const location = useLocation();
 
   const showHeader = location.pathname === "/";
+return (
+  <>
+    <Header setSearchTerm={setSearchTerm} />
+    <Routes>
+      <Route path="/cart" element={<CartDisplay />} />
+      <Route path="/" element={<CardContainer searchTerm={searchTerm} />} />
+      <Route path="/products/:id" element={<ProductDetails />} />
+    </Routes>
+  </>
+);
 
-  return (
-    <>
-      {showHeader && <Header setSearchTerm={setSearchTerm} />}
-      <Routes>
-        <Route path="/" element={<CardContainer searchTerm={searchTerm} />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-      </Routes>
-    </>
-  );
 }
 
 function App() {
