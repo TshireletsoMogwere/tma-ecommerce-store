@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Filter from "../controls/Filter";
 import Pagination from "../controls/Pagination";
 import { getProducts } from "../api/products";
-import RatingSummary from "../popups/RatingSummary";
+import RatingSummary from "../popups/RatingSummaryModal";
 import Sorting from "../controls/Sorting";
 
 function CardContainer({ searchTerm }) {
