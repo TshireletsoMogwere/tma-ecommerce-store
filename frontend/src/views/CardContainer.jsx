@@ -123,14 +123,29 @@ useEffect(() => {
               </select>
             </div>
 
-            <Filter onCategorySelect={handleCategorySelect} />
+          <Filter onCategorySelect={handleCategorySelect} />
           <Sorting onSortChange={handleSortChange} currentSort={sortConfig} />
+          <div className="search-by-pricing-section flex-col">
+            <div className="inputs flex">
+              <div className="starting-price-container">
+                <span>R</span>
+                <input type="number" name="" id="search-starting-price" className="w-24 border"/>
+              </div>
+              <span className="separator">-</span>
+              <div className="ending-price-container">
+                <span>R</span>
+                <input type="number" name="" id="search-ending-price" className="w-24 border"/>
+              </div>
+            </div>
+            <div className="actions">
+              <button className="apply-search">Search</button>
+            </div>
+          </div>
           </div>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-6">
-      
         <div className="flex-1">
         {filteredProducts.length > 0 ? (
           <>
